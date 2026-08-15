@@ -1,8 +1,8 @@
-# Gyaan Ashram Career Institute — Version 1
+# Gyaan Ashram Career Institute — Version 2
 
-A responsive study-material portal prototype for Gyaan Ashram Career Institute.
+A responsive study-material portal prototype with the navy/gold branded homepage layout for Gyaan Ashram Career Institute.
 
-## What works in Version 1
+## What works in Version 2
 
 - Public homepage using the supplied Gyaan Ashram branding.
 - Responsive mobile + desktop layout.
@@ -58,3 +58,10 @@ Then open:
       gyaan-ashram-logo.jpg
       tissues-in-action.pdf
     README.md
+
+
+## Version 2 UI changes
+
+- Redesigned homepage to match the structured reference layout: navy navigation, prominent branded hero, centered readable hero panel, feature strip, study-material cards, information strip, about, schedule and contact sections.
+- Reworked the header logo treatment so the full Gyaan Ashram name is visible instead of being clipped.
+- Existing admin/demo functionality and student material browsing are retained.
