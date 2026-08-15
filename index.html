@@ -10,6 +10,8 @@
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="assets/gyaan-ashram-logo.jpg">
   <link rel="stylesheet" href="styles.css">
+  <!-- Supabase JS Client (CDN) -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 </head>
 <body>
   <div id="toast" class="toast"></div>
@@ -160,13 +162,13 @@
       <button class="close" data-close="login">&times;</button>
       <span class="section-kicker">ADMIN AREA</span>
       <h2 style="margin-top:6px">Admin Login</h2>
-      <p style="color:var(--muted);font-size:13px">Manage classes, subjects and study material.</p>
+      <p style="color:var(--muted);font-size:13px">Sign in with your admin email and password.</p>
       <form id="loginForm">
-        <label>Username<input id="loginUser" value="admin" required autocomplete="username"></label>
+        <label>Email<input id="loginUser" type="email" placeholder="admin@example.com" required autocomplete="email"></label>
         <label>Password<input id="loginPass" type="password" placeholder="Enter password" required autocomplete="current-password"></label>
         <button class="primary" style="width:100%" type="submit">Sign in</button>
       </form>
-      <p class="login-hint">Demo credentials: <b>admin / admin123</b></p>
+      <p class="login-hint">Only authorized admins can sign in.</p>
     </div>
   </div>
 
@@ -198,7 +200,7 @@
           <label>PDF / Material name<input id="uploadName" required placeholder="e.g. Complete Notes"></label>
           <label>Description<textarea id="uploadDescription" rows="3" placeholder="Short description (optional)"></textarea></label>
           <label>PDF file<input id="uploadFile" type="file" accept="application/pdf" required></label>
-          <div class="upload-note">Demo mode stores uploads in this browser. The production build will use Supabase Storage so all devices see the same files.</div>
+          <div class="upload-note">PDFs are stored securely in the cloud. All devices will see uploaded material immediately.</div>
           <button class="primary" type="submit">Upload &amp; Publish</button>
         </form>
       </div>

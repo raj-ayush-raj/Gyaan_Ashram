@@ -1,62 +1,27 @@
-/* ===== Gyaan Ashram Career Institute - App.js ===== */
+/* ===== Gyaan Ashram Career Institute - App.js (Supabase Edition) ===== */
 
-var STORAGE_KEY = "gyaan_ashram_v1_data";
-var FILE_KEY = "gyaan_ashram_v1_files";
+/* ===== Supabase Configuration ===== */
+var SUPABASE_URL = "https://vernnftdgswmnfihsvnr.supabase.co";
+var SUPABASE_KEY = "[REDACTED_JWT]";
 var THEME_KEY = "gyaan_ashram_theme";
 
-var initialData = {
-  classes: [
-    {id:"c8", name:"Class 8"},
-    {id:"c9", name:"Class 9"},
-    {id:"c10", name:"Class 10"}
-  ],
-  subjects: [
-    {id:"s-maths", classId:"c8", name:"Mathematics"},
-    {id:"s-science8", classId:"c8", name:"Science"},
-    {id:"s-maths9", classId:"c9", name:"Mathematics"},
-    {id:"s-science9", classId:"c9", name:"Science"},
-    {id:"s-maths10", classId:"c10", name:"Mathematics"},
-    {id:"s-science10", classId:"c10", name:"Science"},
-    {id:"s-english10", classId:"c10", name:"English"}
-  ],
-  materials: [
-    {
-      id:"m-demo",
-      classId:"c9",
-      subjectId:"s-science9",
-      title:"Tissues in Action",
-      description:"Class 9 Science notes covering plant and animal tissues.",
-      uploadedAt:"2026-08-15T08:00:00",
-      files:[{id:"f-demo", name:"Complete Notes", filename:"tissues-in-action.pdf", demoPath:"assets/tissues-in-action.pdf", sizeLabel:"13 pages"}]
-    }
-  ],
-  schedule: [
-    {batch:"Class 8 - Morning", days:"Mon - Sat", time:"7:00 AM - 9:00 AM"},
-    {batch:"Class 9 - Morning", days:"Mon - Sat", time:"9:15 AM - 11:15 AM"},
-    {batch:"Class 10 - Afternoon", days:"Mon - Sat", time:"2:00 PM - 4:00 PM"},
-    {batch:"Doubt Session (All)", days:"Saturday", time:"4:30 PM - 6:00 PM"}
-  ]
-};
-
-var data = loadData();
-var fileStore = loadFiles();
+var supabase;
+var currentUser = null;
 var currentBrowse = {classId: null, subjectId: null};
 
+/* Data cache */
+var data = {classes: [], subjects: [], materials: [], schedule: []};
+var defaultSchedule = [
+  {batch: "Class 8 - Morning", days: "Mon - Sat", time: "7:00 AM - 9:00 AM"},
+  {batch: "Class 9 - Morning", days: "Mon - Sat", time: "9:15 AM - 11:15 AM"},
+  {batch: "Class 10 - Afternoon", days: "Mon - Sat", time: "2:00 PM - 4:00 PM"},
+  {batch: "Doubt Session (All)", days: "Saturday", time: "4:30 PM - 6:00 PM"}
+];
 
 /* ===== Utilities ===== */
 function $(s){ return document.querySelector(s); }
 function $$(s){ return Array.from(document.querySelectorAll(s)); }
-
-function loadData(){
-  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || JSON.parse(JSON.stringify(initialData)); }
-  catch(e){ return JSON.parse(JSON.stringify(initialData)); }
-}
-function saveData(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); }
-function loadFiles(){
-  try { return JSON.parse(localStorage.getItem(FILE_KEY) || "{}"); } catch(e){ return {}; }
-}
-function saveFiles(){ localStorage.setItem(FILE_KEY, JSON.stringify(fileStore)); }
-function uid(prefix){ return prefix + "-" + Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
+function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
 
 function esc(v){
   var s = String(v == null ? "" : v);
@@ -69,14 +34,45 @@ function esc(v){
 }
 
 function dateLabel(v){ return new Date(v).toLocaleDateString("en-IN",{day:"2-digit",month:"short",year:"numeric"}); }
-function className(id){ var c = data.classes.find(function(x){return x.id===id;}); return c ? c.name : "Unknown Class"; }
-function subjectName(id){ var s = data.subjects.find(function(x){return x.id===id;}); return s ? s.name : "Unknown Subject"; }
-function materialCountForClass(classId){
-  return data.materials.filter(function(m){return m.classId===classId;}).reduce(function(n,m){return n+m.files.length;},0);
-}
+
 function toast(msg){
   var t = $("#toast"); t.textContent = msg; t.classList.add("show");
   clearTimeout(window._toastT); window._toastT = setTimeout(function(){ t.classList.remove("show"); }, 2500);
+}
+
+/* ===== Supabase Init ===== */
+function initSupabase(){
+  supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+}
+
+/* ===== Data Fetching (from Supabase) ===== */
+async function fetchAllData(){
+  try {
+    var classRes = await supabase.from("classes").select("*").order("sort_order");
+    var subjectRes = await supabase.from("subjects").select("*");
+    var materialRes = await supabase.from("materials").select("*, material_files(*)").order("uploaded_at", {ascending: false});
+
+    if(classRes.data) data.classes = classRes.data;
+    if(subjectRes.data) data.subjects = subjectRes.data;
+    if(materialRes.data) data.materials = materialRes.data;
+    data.schedule = defaultSchedule;
+  } catch(err){
+    console.error("Error fetching data:", err);
+    toast("Error loading data. Please refresh.");
+  }
+}
+
+function className(id){ var c = data.classes.find(function(x){return x.id===id;}); return c ? c.name : "Unknown Class"; }
+function subjectName(id){ var s = data.subjects.find(function(x){return x.id===id;}); return s ? s.name : "Unknown Subject"; }
+function materialCountForClass(classId){
+  return data.materials.filter(function(m){return m.class_id===classId;}).reduce(function(n,m){
+    return n + (m.material_files ? m.material_files.length : 0);
+  }, 0);
+}
+
+function getPublicUrl(storagePath){
+  var res = supabase.storage.from("study-materials").getPublicUrl(storagePath);
+  return res.data.publicUrl;
 }
 
 /* ===== Dark Mode ===== */
@@ -106,8 +102,9 @@ function renderRecent(){
   if(!el) return;
   var allFiles = [];
   data.materials.forEach(function(m){
-    m.files.forEach(function(f){
-      allFiles.push({material: m, file: f, date: m.uploadedAt});
+    var files = m.material_files || [];
+    files.forEach(function(f){
+      allFiles.push({material: m, file: f, date: m.uploaded_at});
     });
   });
   allFiles.sort(function(a,b){ return new Date(b.date) - new Date(a.date); });
@@ -120,12 +117,12 @@ function renderRecent(){
   recent.forEach(function(item){
     var m = item.material, f = item.file;
     html += "<div class=\"recent-card\">" +
-      "<span class=\"rc-badge\">" + esc(className(m.classId)) + " &bull; " + esc(subjectName(m.subjectId)) + "</span>" +
+      "<span class=\"rc-badge\">" + esc(className(m.class_id)) + " &bull; " + esc(subjectName(m.subject_id)) + "</span>" +
       "<h4>" + esc(m.title) + "</h4>" +
       "<p class=\"rc-meta\">" + esc(f.name) + " &bull; " + dateLabel(item.date) + "</p>" +
       "<div class=\"rc-actions\">" +
-        "<button class=\"small\" data-action=\"view\" data-mid=\"" + m.id + "\" data-fid=\"" + f.id + "\">View</button>" +
-        "<button class=\"small dark\" data-action=\"download\" data-mid=\"" + m.id + "\" data-fid=\"" + f.id + "\">Download</button>" +
+        "<button class=\"small\" data-action=\"view\" data-path=\"" + esc(f.storage_path) + "\">View</button>" +
+        "<button class=\"small dark\" data-action=\"download\" data-path=\"" + esc(f.storage_path) + "\" data-fname=\"" + esc(f.filename) + "\">Download</button>" +
         "<button class=\"small whatsapp\" data-action=\"whatsapp\" data-title=\"" + esc(m.title) + "\" data-fname=\"" + esc(f.name) + "\">WhatsApp</button>" +
       "</div></div>";
   });
@@ -139,7 +136,7 @@ function renderClasses(){
   var html = "";
   data.classes.forEach(function(c, i){
     var count = materialCountForClass(c.id);
-    var subjects = data.subjects.filter(function(s){return s.classId===c.id;}).length;
+    var subjects = data.subjects.filter(function(s){return s.class_id===c.id;}).length;
     html += "<article class=\"class-card\" data-action=\"browseclass\" data-id=\"" + c.id + "\">" +
       "<span class=\"class-number\">CLASS " + String(i+1).padStart(2,"0") + "</span>" +
       "<h3>" + esc(c.name) + "</h3>" +
@@ -162,7 +159,7 @@ function renderBrowse(){
   var cls = className(currentBrowse.classId);
 
   if(!currentBrowse.subjectId){
-    var subjects = data.subjects.filter(function(s){return s.classId===currentBrowse.classId;});
+    var subjects = data.subjects.filter(function(s){return s.class_id===currentBrowse.classId;});
     var html = "<div class=\"breadcrumb\"><button data-action=\"browseall\">Study Material</button> <span>&rsaquo;</span> " + esc(cls) + "</div>";
     if(subjects.length){
       html += "<div class=\"subject-grid\">";
@@ -180,8 +177,8 @@ function renderBrowse(){
 
   var subj = subjectName(currentBrowse.subjectId);
   var mats = data.materials.filter(function(m){
-    return m.classId===currentBrowse.classId && m.subjectId===currentBrowse.subjectId;
-  }).sort(function(a,b){ return new Date(b.uploadedAt) - new Date(a.uploadedAt); });
+    return m.class_id===currentBrowse.classId && m.subject_id===currentBrowse.subjectId;
+  });
 
   var html = "<div class=\"breadcrumb\">" +
     "<button data-action=\"browseall\">Study Material</button> <span>&rsaquo;</span> " +
@@ -196,12 +193,13 @@ function renderBrowse(){
 
   html += "<div class=\"notes\">";
   mats.forEach(function(m){
-    html += "<div class=\"note-group\"><div class=\"note-group-head\"><h3>" + esc(m.title) + "</h3><p>Uploaded " + dateLabel(m.uploadedAt) + (m.description ? " &bull; " + esc(m.description) : "") + "</p></div>";
-    m.files.forEach(function(f){
-      html += "<div class=\"note-item\"><div class=\"note-main\"><div class=\"pdf\">PDF</div><div><strong>" + esc(f.name) + "</strong><div class=\"meta\">" + esc(f.sizeLabel || "PDF document") + "</div></div></div>" +
+    var files = m.material_files || [];
+    html += "<div class=\"note-group\"><div class=\"note-group-head\"><h3>" + esc(m.title) + "</h3><p>Uploaded " + dateLabel(m.uploaded_at) + (m.description ? " &bull; " + esc(m.description) : "") + "</p></div>";
+    files.forEach(function(f){
+      html += "<div class=\"note-item\"><div class=\"note-main\"><div class=\"pdf\">PDF</div><div><strong>" + esc(f.name) + "</strong><div class=\"meta\">" + esc(f.size_label || "PDF document") + "</div></div></div>" +
         "<div class=\"note-actions\">" +
-          "<button class=\"small\" data-action=\"view\" data-mid=\"" + m.id + "\" data-fid=\"" + f.id + "\">View</button>" +
-          "<button class=\"small dark\" data-action=\"download\" data-mid=\"" + m.id + "\" data-fid=\"" + f.id + "\">Download</button>" +
+          "<button class=\"small\" data-action=\"view\" data-path=\"" + esc(f.storage_path) + "\">View</button>" +
+          "<button class=\"small dark\" data-action=\"download\" data-path=\"" + esc(f.storage_path) + "\" data-fname=\"" + esc(f.filename) + "\">Download</button>" +
           "<button class=\"small whatsapp\" data-action=\"whatsapp\" data-title=\"" + esc(m.title) + "\" data-fname=\"" + esc(f.name) + "\">WhatsApp</button>" +
         "</div></div>";
     });
@@ -215,41 +213,26 @@ function doBrowseAll(){ currentBrowse = {classId:null, subjectId:null}; $("#clas
 function doBrowseClass(id){ currentBrowse = {classId:id, subjectId:null}; $("#classGrid").classList.add("hidden"); renderBrowse(); }
 function doBrowseSubject(id){
   var s = data.subjects.find(function(x){return x.id===id;});
-  currentBrowse = {classId: s ? s.classId : null, subjectId: id};
+  currentBrowse = {classId: s ? s.class_id : null, subjectId: id};
   $("#classGrid").classList.add("hidden");
   renderBrowse();
 }
 
 /* ===== File Operations ===== */
-function getFileContent(material, file){
-  if(file.demoPath) return {url: file.demoPath, revoke: false};
-  var b64 = fileStore[file.id]; if(!b64) return null;
-  var raw = atob(b64.split(",")[1] || "");
-  var bytes = new Uint8Array(raw.length);
-  for(var i=0; i<raw.length; i++) bytes[i] = raw.charCodeAt(i);
-  var blob = new Blob([bytes], {type:"application/pdf"});
-  return {url: URL.createObjectURL(blob), revoke: true};
+function doViewFile(storagePath){
+  var url = getPublicUrl(storagePath);
+  window.open(url, "_blank", "noopener");
 }
 
-function doViewFile(mid, fid){
-  var m = data.materials.find(function(x){return x.id===mid;});
-  var f = m ? m.files.find(function(x){return x.id===fid;}) : null;
-  if(!f) return;
-  var got = getFileContent(m, f);
-  if(!got){ toast("This PDF is unavailable in this browser."); return; }
-  window.open(got.url, "_blank", "noopener");
-  if(got.revoke) setTimeout(function(){ URL.revokeObjectURL(got.url); }, 60000);
-}
-
-function doDownloadFile(mid, fid){
-  var m = data.materials.find(function(x){return x.id===mid;});
-  var f = m ? m.files.find(function(x){return x.id===fid;}) : null;
-  if(!f) return;
-  var got = getFileContent(m, f);
-  if(!got){ toast("This PDF is unavailable in this browser."); return; }
-  var a = document.createElement("a"); a.href = got.url; a.download = f.filename || "study-material.pdf";
-  document.body.appendChild(a); a.click(); a.remove();
-  if(got.revoke) setTimeout(function(){ URL.revokeObjectURL(got.url); }, 1000);
+function doDownloadFile(storagePath, filename){
+  var url = getPublicUrl(storagePath);
+  var a = document.createElement("a");
+  a.href = url;
+  a.download = filename || "study-material.pdf";
+  a.target = "_blank";
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
 }
 
 function doShareWhatsApp(title, fname){
@@ -281,11 +264,12 @@ function initSearch(){
     clear.classList.remove("hidden");
     var matches = [];
     data.materials.forEach(function(m){
-      var clsName = className(m.classId).toLowerCase();
-      var subjName = subjectName(m.subjectId).toLowerCase();
+      var clsName = className(m.class_id).toLowerCase();
+      var subjName = subjectName(m.subject_id).toLowerCase();
       var titleLow = m.title.toLowerCase();
       var descLow = (m.description || "").toLowerCase();
-      m.files.forEach(function(f){
+      var files = m.material_files || [];
+      files.forEach(function(f){
         var nameLow = f.name.toLowerCase();
         if(titleLow.indexOf(q) >= 0 || nameLow.indexOf(q) >= 0 || clsName.indexOf(q) >= 0 || subjName.indexOf(q) >= 0 || descLow.indexOf(q) >= 0){
           matches.push({material: m, file: f});
@@ -304,9 +288,9 @@ function initSearch(){
     var html = "<p style=\"font-size:13px;color:var(--muted);margin:0 0 14px\">" + matches.length + " result" + (matches.length!==1?"s":"") + " found</p><div class=\"notes\">";
     matches.forEach(function(item){
       var m = item.material, f = item.file;
-      html += "<div class=\"note-group\"><div class=\"note-group-head\"><h3>" + esc(m.title) + "</h3><p>" + esc(className(m.classId)) + " &bull; " + esc(subjectName(m.subjectId)) + " &bull; " + dateLabel(m.uploadedAt) + "</p></div>" +
-        "<div class=\"note-item\"><div class=\"note-main\"><div class=\"pdf\">PDF</div><div><strong>" + esc(f.name) + "</strong><div class=\"meta\">" + esc(f.sizeLabel || "PDF document") + "</div></div></div>" +
-        "<div class=\"note-actions\"><button class=\"small\" data-action=\"view\" data-mid=\"" + m.id + "\" data-fid=\"" + f.id + "\">View</button><button class=\"small dark\" data-action=\"download\" data-mid=\"" + m.id + "\" data-fid=\"" + f.id + "\">Download</button><button class=\"small whatsapp\" data-action=\"whatsapp\" data-title=\"" + esc(m.title) + "\" data-fname=\"" + esc(f.name) + "\">WhatsApp</button></div></div></div>";
+      html += "<div class=\"note-group\"><div class=\"note-group-head\"><h3>" + esc(m.title) + "</h3><p>" + esc(className(m.class_id)) + " &bull; " + esc(subjectName(m.subject_id)) + " &bull; " + dateLabel(m.uploaded_at) + "</p></div>" +
+        "<div class=\"note-item\"><div class=\"note-main\"><div class=\"pdf\">PDF</div><div><strong>" + esc(f.name) + "</strong><div class=\"meta\">" + esc(f.size_label || "PDF document") + "</div></div></div>" +
+        "<div class=\"note-actions\"><button class=\"small\" data-action=\"view\" data-path=\"" + esc(f.storage_path) + "\">View</button><button class=\"small dark\" data-action=\"download\" data-path=\"" + esc(f.storage_path) + "\" data-fname=\"" + esc(f.filename) + "\">Download</button><button class=\"small whatsapp\" data-action=\"whatsapp\" data-title=\"" + esc(m.title) + "\" data-fname=\"" + esc(f.name) + "\">WhatsApp</button></div></div></div>";
     });
     html += "</div>";
     results.innerHTML = html;
@@ -327,7 +311,7 @@ function initSearch(){
 function renderSchedule(){
   var el = $("#scheduleList");
   if(!el) return;
-  var schedule = data.schedule || initialData.schedule;
+  var schedule = data.schedule || defaultSchedule;
   var html = "";
   schedule.forEach(function(row){
     html += "<div class=\"schedule-row\"><strong>" + esc(row.batch) + "</strong><span class=\"sch-days\">" + esc(row.days) + "</span><span class=\"sch-time\">" + esc(row.time) + "</span></div>";
@@ -335,7 +319,7 @@ function renderSchedule(){
   el.innerHTML = html;
 }
 
-/* ===== Admin ===== */
+/* ===== Admin: Populate Selects ===== */
 function populateSelects(){
   var opts = "";
   data.classes.forEach(function(c){ opts += "<option value=\""+c.id+"\">"+esc(c.name)+"</option>"; });
@@ -350,28 +334,31 @@ function updateSubjectSelect(classSel, subjectSel){
   var classEl = $(classSel); var subEl = $(subjectSel);
   if(!classEl || !subEl) return;
   var cid = classEl.value;
-  var subs = data.subjects.filter(function(s){ return s.classId === cid; });
+  var subs = data.subjects.filter(function(s){ return s.class_id === cid; });
   var html = "";
   subs.forEach(function(s){ html += "<option value=\""+s.id+"\">"+esc(s.name)+"</option>"; });
   subEl.innerHTML = html;
 }
 
+/* ===== Admin: Render Materials List ===== */
 function renderAdminMaterials(){
   var el = $("#adminMaterials");
   if(!el) return;
-  var mats = data.materials.slice().sort(function(a,b){ return new Date(b.uploadedAt) - new Date(a.uploadedAt); });
+  var mats = data.materials.slice();
   if(!mats.length){
     el.innerHTML = "<div class=\"empty\"><strong>No materials yet</strong>Upload your first PDF from the Upload Material tab.</div>";
     return;
   }
   var html = "";
   mats.forEach(function(m){
-    html += "<div class=\"admin-row\"><div><strong>" + esc(m.title) + "</strong><small>" + esc(className(m.classId)) + " &bull; " + esc(subjectName(m.subjectId)) + " &bull; " + dateLabel(m.uploadedAt) + " &bull; " + m.files.length + " PDF" + (m.files.length!==1?"s":"") + "</small></div>" +
+    var fileCount = m.material_files ? m.material_files.length : 0;
+    html += "<div class=\"admin-row\"><div><strong>" + esc(m.title) + "</strong><small>" + esc(className(m.class_id)) + " &bull; " + esc(subjectName(m.subject_id)) + " &bull; " + dateLabel(m.uploaded_at) + " &bull; " + fileCount + " PDF" + (fileCount!==1?"s":"") + "</small></div>" +
       "<div class=\"row-actions\"><button class=\"small\" data-action=\"edit\" data-id=\"" + m.id + "\">Edit</button><button class=\"small danger\" data-action=\"deletemat\" data-id=\"" + m.id + "\">Delete</button></div></div>";
   });
   el.innerHTML = html;
 }
 
+/* ===== Admin: Render Structure ===== */
 function renderStructure(){
   var classEl = $("#classManage"); var subEl = $("#subjectManage");
   if(!classEl || !subEl) return;
@@ -382,9 +369,20 @@ function renderStructure(){
   classEl.innerHTML = html || "<p style=\"padding:12px;color:var(--muted)\">No classes.</p>";
   html = "";
   data.subjects.forEach(function(s){
-    html += "<div class=\"manage-item\"><span>" + esc(className(s.classId)) + " &bull; " + esc(s.name) + "</span><button class=\"small danger\" data-action=\"deletesubject\" data-id=\"" + s.id + "\">Delete</button></div>";
+    html += "<div class=\"manage-item\"><span>" + esc(className(s.class_id)) + " &bull; " + esc(s.name) + "</span><button class=\"small danger\" data-action=\"deletesubject\" data-id=\"" + s.id + "\">Delete</button></div>";
   });
   subEl.innerHTML = html || "<p style=\"padding:12px;color:var(--muted)\">No subjects.</p>";
+}
+
+/* ===== Admin: Upload PDF to Supabase Storage ===== */
+async function uploadPdfToStorage(file){
+  var filePath = uid() + "_" + file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
+  var result = await supabase.storage.from("study-materials").upload(filePath, file, {
+    cacheControl: "3600",
+    upsert: false
+  });
+  if(result.error){ throw result.error; }
+  return filePath;
 }
 
 /* ===== Delegated Event Listener ===== */
@@ -393,8 +391,8 @@ document.addEventListener("click", function(e){
   if(!btn) return;
   var action = btn.getAttribute("data-action");
 
-  if(action === "view") doViewFile(btn.getAttribute("data-mid"), btn.getAttribute("data-fid"));
-  else if(action === "download") doDownloadFile(btn.getAttribute("data-mid"), btn.getAttribute("data-fid"));
+  if(action === "view") doViewFile(btn.getAttribute("data-path"));
+  else if(action === "download") doDownloadFile(btn.getAttribute("data-path"), btn.getAttribute("data-fname"));
   else if(action === "whatsapp") doShareWhatsApp(btn.getAttribute("data-title"), btn.getAttribute("data-fname"));
   else if(action === "browseclass") doBrowseClass(btn.getAttribute("data-id"));
   else if(action === "browsesubject") doBrowseSubject(btn.getAttribute("data-id"));
@@ -403,43 +401,89 @@ document.addEventListener("click", function(e){
     var m = data.materials.find(function(x){return x.id===btn.getAttribute("data-id");});
     if(!m) return;
     $("#editId").value = m.id;
-    $("#editClass").value = m.classId;
+    $("#editClass").value = m.class_id;
     updateSubjectSelect("#editClass","#editSubject");
-    $("#editSubject").value = m.subjectId;
+    $("#editSubject").value = m.subject_id;
     $("#editTopic").value = m.title;
-    $("#editName").value = m.files[0] ? m.files[0].name : "";
+    var firstFile = m.material_files && m.material_files[0];
+    $("#editName").value = firstFile ? firstFile.name : "";
     $("#editDescription").value = m.description || "";
     openModal("#editModal");
   }
   else if(action === "deletemat"){
-    var m = data.materials.find(function(x){return x.id===btn.getAttribute("data-id");});
-    if(!m) return;
-    if(!confirm("Delete \"" + m.title + "\"? This removes it from the student portal.")) return;
-    m.files.forEach(function(f){ if(!f.demoPath) delete fileStore[f.id]; });
-    data.materials = data.materials.filter(function(x){return x.id!==m.id;});
-    saveData(); saveFiles(); renderAdminMaterials(); renderClasses(); renderBrowse(); renderRecent(); toast("Material deleted.");
+    handleDeleteMaterial(btn.getAttribute("data-id"));
   }
   else if(action === "deleteclass"){
-    var c = data.classes.find(function(x){return x.id===btn.getAttribute("data-id");});
-    if(!c) return;
-    if(!confirm("Delete \"" + c.name + "\"? All subjects and materials for this class will also be removed.")) return;
-    data.materials = data.materials.filter(function(m){return m.classId!==c.id;});
-    data.subjects = data.subjects.filter(function(s){return s.classId!==c.id;});
-    data.classes = data.classes.filter(function(x){return x.id!==c.id;});
-    saveData(); populateSelects(); renderStructure(); renderAdminMaterials(); renderClasses(); renderRecent(); toast("Class deleted.");
+    handleDeleteClass(btn.getAttribute("data-id"));
   }
   else if(action === "deletesubject"){
-    var s = data.subjects.find(function(x){return x.id===btn.getAttribute("data-id");});
-    if(!s) return;
-    if(!confirm("Delete \"" + s.name + "\"? All materials for this subject will also be removed.")) return;
-    data.materials = data.materials.filter(function(m){return m.subjectId!==s.id;});
-    data.subjects = data.subjects.filter(function(x){return x.id!==s.id;});
-    saveData(); populateSelects(); renderStructure(); renderAdminMaterials(); renderClasses(); renderRecent(); toast("Subject deleted.");
+    handleDeleteSubject(btn.getAttribute("data-id"));
   }
 });
 
+/* ===== Admin: Delete Handlers ===== */
+async function handleDeleteMaterial(id){
+  var m = data.materials.find(function(x){return x.id===id;});
+  if(!m) return;
+  if(!confirm("Delete \"" + m.title + "\"? This removes it from the student portal.")) return;
+  try {
+    // Delete files from storage
+    var files = m.material_files || [];
+    var paths = files.map(function(f){ return f.storage_path; });
+    if(paths.length > 0){
+      await supabase.storage.from("study-materials").remove(paths);
+    }
+    // Delete material (cascades to material_files)
+    await supabase.from("materials").delete().eq("id", id);
+    await fetchAllData();
+    renderAdminMaterials(); renderClasses(); renderBrowse(); renderRecent();
+    toast("Material deleted.");
+  } catch(err){
+    toast("Error deleting: " + err.message);
+  }
+}
+
+async function handleDeleteClass(id){
+  var c = data.classes.find(function(x){return x.id===id;});
+  if(!c) return;
+  if(!confirm("Delete \"" + c.name + "\"? All subjects and materials for this class will also be removed.")) return;
+  try {
+    // Delete storage files for materials in this class
+    var mats = data.materials.filter(function(m){return m.class_id===id;});
+    var paths = [];
+    mats.forEach(function(m){ (m.material_files||[]).forEach(function(f){ paths.push(f.storage_path); }); });
+    if(paths.length > 0) await supabase.storage.from("study-materials").remove(paths);
+    // Delete class (cascades to subjects, materials, files)
+    await supabase.from("classes").delete().eq("id", id);
+    await fetchAllData();
+    populateSelects(); renderStructure(); renderAdminMaterials(); renderClasses(); renderRecent();
+    toast("Class deleted.");
+  } catch(err){
+    toast("Error deleting: " + err.message);
+  }
+}
+
+async function handleDeleteSubject(id){
+  var s = data.subjects.find(function(x){return x.id===id;});
+  if(!s) return;
+  if(!confirm("Delete \"" + s.name + "\"? All materials for this subject will also be removed.")) return;
+  try {
+    var mats = data.materials.filter(function(m){return m.subject_id===id;});
+    var paths = [];
+    mats.forEach(function(m){ (m.material_files||[]).forEach(function(f){ paths.push(f.storage_path); }); });
+    if(paths.length > 0) await supabase.storage.from("study-materials").remove(paths);
+    await supabase.from("subjects").delete().eq("id", id);
+    await fetchAllData();
+    populateSelects(); renderStructure(); renderAdminMaterials(); renderClasses(); renderRecent();
+    toast("Subject deleted.");
+  } catch(err){
+    toast("Error deleting: " + err.message);
+  }
+}
+
 /* ===== Init ===== */
-document.addEventListener("DOMContentLoaded", function(){
+document.addEventListener("DOMContentLoaded", async function(){
+  initSupabase();
   initTheme();
 
   // Year in footer
@@ -465,27 +509,30 @@ document.addEventListener("DOMContentLoaded", function(){
   var adminBtn = $("#adminBtn"); if(adminBtn) adminBtn.addEventListener("click", openLogin);
   var footerAdmin = $("#footerAdmin"); if(footerAdmin) footerAdmin.addEventListener("click", openLogin);
 
-  // Login form
+  // Login form — Supabase Auth
   var loginForm = $("#loginForm");
   if(loginForm){
-    loginForm.addEventListener("submit", function(e){
+    loginForm.addEventListener("submit", async function(e){
       e.preventDefault();
-      var user = $("#loginUser").value.trim();
+      var email = $("#loginUser").value.trim();
       var pass = $("#loginPass").value;
-      if(user === "admin" && pass === "admin123"){
+      try {
+        var result = await supabase.auth.signInWithPassword({email: email, password: pass});
+        if(result.error) throw result.error;
+        currentUser = result.data.user;
         closeModal("#loginModal");
         populateSelects();
         renderAdminMaterials();
         renderStructure();
         openModal("#adminModal");
         toast("Welcome, Admin!");
-      } else {
-        toast("Invalid credentials.");
+      } catch(err){
+        toast("Login failed: " + (err.message || "Invalid credentials"));
       }
     });
   }
 
-  // Close modals via backdrop and close buttons
+  // Close modals
   $$("[data-close]").forEach(function(el){
     el.addEventListener("click", function(){
       var target = el.getAttribute("data-close");
@@ -509,31 +556,38 @@ document.addEventListener("DOMContentLoaded", function(){
   var uploadForm = $("#uploadForm");
   if(uploadForm){
     $("#uploadClass").addEventListener("change", function(){ updateSubjectSelect("#uploadClass","#uploadSubject"); });
-    uploadForm.addEventListener("submit", function(e){
+    uploadForm.addEventListener("submit", async function(e){
       e.preventDefault();
       var file = $("#uploadFile").files[0];
       if(!file){ toast("Please select a PDF."); return; }
-      var reader = new FileReader();
-      reader.onload = function(ev){
-        var fileId = uid("f");
-        var matId = uid("m");
-        fileStore[fileId] = ev.target.result;
-        saveFiles();
-        data.materials.push({
-          id: matId,
-          classId: $("#uploadClass").value,
-          subjectId: $("#uploadSubject").value,
+      try {
+        toast("Uploading...");
+        // Upload file to storage
+        var storagePath = await uploadPdfToStorage(file);
+        // Insert material record
+        var matResult = await supabase.from("materials").insert({
+          class_id: $("#uploadClass").value,
+          subject_id: $("#uploadSubject").value,
           title: $("#uploadTopic").value.trim(),
-          description: $("#uploadDescription").value.trim(),
-          uploadedAt: new Date().toISOString(),
-          files: [{id: fileId, name: $("#uploadName").value.trim(), filename: file.name, sizeLabel: Math.ceil(file.size/1024) + " KB"}]
+          description: $("#uploadDescription").value.trim()
+        }).select().single();
+        if(matResult.error) throw matResult.error;
+        // Insert file record
+        var fileResult = await supabase.from("material_files").insert({
+          material_id: matResult.data.id,
+          name: $("#uploadName").value.trim(),
+          filename: file.name,
+          storage_path: storagePath,
+          size_label: Math.ceil(file.size/1024) + " KB"
         });
-        saveData();
+        if(fileResult.error) throw fileResult.error;
         uploadForm.reset();
+        await fetchAllData();
         renderAdminMaterials(); renderClasses(); renderBrowse(); renderRecent();
         toast("Material uploaded successfully!");
-      };
-      reader.readAsDataURL(file);
+      } catch(err){
+        toast("Upload error: " + (err.message || "Something went wrong"));
+      }
     });
   }
 
@@ -541,30 +595,47 @@ document.addEventListener("DOMContentLoaded", function(){
   var editForm = $("#editForm");
   if(editForm){
     $("#editClass").addEventListener("change", function(){ updateSubjectSelect("#editClass","#editSubject"); });
-    editForm.addEventListener("submit", function(e){
+    editForm.addEventListener("submit", async function(e){
       e.preventDefault();
       var id = $("#editId").value;
-      var m = data.materials.find(function(x){return x.id===id;});
-      if(!m) return;
-      m.classId = $("#editClass").value;
-      m.subjectId = $("#editSubject").value;
-      m.title = $("#editTopic").value.trim();
-      m.description = $("#editDescription").value.trim();
-      if(m.files[0]) m.files[0].name = $("#editName").value.trim();
-      var newFile = $("#editFile").files[0];
-      if(newFile){
-        var reader = new FileReader();
-        reader.onload = function(ev){
-          var fid = m.files[0] ? m.files[0].id : uid("f");
-          if(m.files[0] && !m.files[0].demoPath) delete fileStore[m.files[0].id];
-          fileStore[fid] = ev.target.result;
-          saveFiles();
-          m.files[0] = {id: fid, name: m.files[0] ? m.files[0].name : "Notes", filename: newFile.name, sizeLabel: Math.ceil(newFile.size/1024) + " KB"};
-          saveData(); closeModal("#editModal"); renderAdminMaterials(); renderClasses(); renderBrowse(); renderRecent(); toast("Material updated.");
-        };
-        reader.readAsDataURL(newFile);
-      } else {
-        saveData(); closeModal("#editModal"); renderAdminMaterials(); renderClasses(); renderBrowse(); renderRecent(); toast("Material updated.");
+      try {
+        // Update material metadata
+        await supabase.from("materials").update({
+          class_id: $("#editClass").value,
+          subject_id: $("#editSubject").value,
+          title: $("#editTopic").value.trim(),
+          description: $("#editDescription").value.trim()
+        }).eq("id", id);
+
+        // Update file name
+        var m = data.materials.find(function(x){return x.id===id;});
+        var firstFile = m && m.material_files && m.material_files[0];
+        if(firstFile){
+          await supabase.from("material_files").update({
+            name: $("#editName").value.trim()
+          }).eq("id", firstFile.id);
+        }
+
+        // If new PDF uploaded, replace in storage
+        var newFile = $("#editFile").files[0];
+        if(newFile && firstFile){
+          // Delete old file from storage
+          await supabase.storage.from("study-materials").remove([firstFile.storage_path]);
+          // Upload new
+          var newPath = await uploadPdfToStorage(newFile);
+          await supabase.from("material_files").update({
+            storage_path: newPath,
+            filename: newFile.name,
+            size_label: Math.ceil(newFile.size/1024) + " KB"
+          }).eq("id", firstFile.id);
+        }
+
+        await fetchAllData();
+        closeModal("#editModal");
+        renderAdminMaterials(); renderClasses(); renderBrowse(); renderRecent();
+        toast("Material updated.");
+      } catch(err){
+        toast("Error updating: " + (err.message || "Something went wrong"));
       }
     });
   }
@@ -574,13 +645,20 @@ document.addEventListener("DOMContentLoaded", function(){
   if(addClassBtn) addClassBtn.addEventListener("click", function(){ openModal("#classModal"); });
   var classForm = $("#classForm");
   if(classForm){
-    classForm.addEventListener("submit", function(e){
+    classForm.addEventListener("submit", async function(e){
       e.preventDefault();
       var name = $("#className").value.trim();
       if(!name){ toast("Enter a class name."); return; }
-      data.classes.push({id: uid("c"), name: name});
-      saveData(); closeModal("#classModal"); classForm.reset();
-      populateSelects(); renderStructure(); renderClasses(); toast("Class added.");
+      try {
+        var maxOrder = data.classes.reduce(function(max, c){ return c.sort_order > max ? c.sort_order : max; }, 0);
+        await supabase.from("classes").insert({name: name, sort_order: maxOrder + 1});
+        await fetchAllData();
+        closeModal("#classModal"); classForm.reset();
+        populateSelects(); renderStructure(); renderClasses();
+        toast("Class added.");
+      } catch(err){
+        toast("Error: " + err.message);
+      }
     });
   }
 
@@ -598,22 +676,34 @@ document.addEventListener("DOMContentLoaded", function(){
   });
   var subjectForm = $("#subjectForm");
   if(subjectForm){
-    subjectForm.addEventListener("submit", function(e){
+    subjectForm.addEventListener("submit", async function(e){
       e.preventDefault();
       var classId = $("#subjectClass").value;
       var name = $("#subjectName").value.trim();
       if(!name){ toast("Enter a subject name."); return; }
-      data.subjects.push({id: uid("s"), classId: classId, name: name});
-      saveData(); closeModal("#subjectModal"); subjectForm.reset();
-      populateSelects(); renderStructure(); renderClasses(); toast("Subject added.");
+      try {
+        await supabase.from("subjects").insert({class_id: classId, name: name});
+        await fetchAllData();
+        closeModal("#subjectModal"); subjectForm.reset();
+        populateSelects(); renderStructure(); renderClasses();
+        toast("Subject added.");
+      } catch(err){
+        toast("Error: " + err.message);
+      }
     });
   }
 
   // Logout
   var logoutBtn = $("#logout");
-  if(logoutBtn) logoutBtn.addEventListener("click", function(){ closeModal("#adminModal"); toast("Logged out."); });
+  if(logoutBtn) logoutBtn.addEventListener("click", async function(){
+    await supabase.auth.signOut();
+    currentUser = null;
+    closeModal("#adminModal");
+    toast("Logged out.");
+  });
 
-  // Initial renders
+  // Fetch data and render
+  await fetchAllData();
   renderClasses();
   renderBrowse();
   renderRecent();
