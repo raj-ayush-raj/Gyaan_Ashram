@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Gyaan Ashram Career Institute — study material, notes and academic resources." />
+  <title>Gyaan Ashram Career Institute</title>
+  <link rel="icon" href="assets/gyaan-ashram-logo.jpg" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div id="toast" class="toast" aria-live="polite"></div>
+
+  <header class="site-header">
+    <a class="brand" href="#home" aria-label="Gyaan Ashram home">
+      <img src="assets/gyaan-ashram-logo.jpg" alt="Gyaan Ashram Career Institute logo" />
+      <div class="brand-copy">
+        <strong>GYAAN ASHRAM</strong>
+        <span>CAREER INSTITUTE</span>
+      </div>
+    </a>
+    <nav class="top-nav">
+      <a href="#home">Home</a>
+      <a href="#materials">Study Material</a>
+      <a href="#schedule">Schedule</a>
+      <a href="#contact">Contact</a>
+      <button id="adminNavBtn" class="nav-admin">Admin Login</button>
+    </nav>
+    <button id="menuBtn" class="menu-btn" aria-label="Open menu">☰</button>
+  </header>
+
+  <main id="home">
+    <section class="hero">
+      <div class="hero-image-wrap">
+        <img src="assets/gyaan-ashram-banner.jpg" alt="Gyaan Ashram Career Institute" />
+      </div>
+      <div class="hero-overlay"></div>
+      <div class="hero-content">
+        <span class="eyebrow">KNOWLEDGE TODAY • SUCCESS TOMORROW</span>
+        <h1>Empowering Minds.<br><span>Building Futures.</span></h1>
+        <p>Study material, notes and academic resources — available whenever you need them.</p>
+        <a class="primary-btn" href="#materials">Explore Study Material <span>→</span></a>
+      </div>
+    </section>
+
+    <section class="section intro-section">
+      <div>
+        <span class="section-kicker">STUDENT RESOURCE CENTRE</span>
+        <h2>Your notes, organised.</h2>
+        <p class="muted">Choose your class, select a subject, and access the latest notes and PDFs uploaded by Gyaan Ashram.</p>
+      </div>
+      <div class="quick-stat">
+        <span class="stat-icon">📚</span>
+        <div><strong id="materialCount">0</strong><span>materials available</span></div>
+      </div>
+    </section>
+
+    <section id="materials" class="section materials-section">
+      <div class="section-heading">
+        <div>
+          <span class="section-kicker">STUDY MATERIAL</span>
+          <h2>Select your class</h2>
+        </div>
+        <button id="resetBrowse" class="text-btn hidden">← All Classes</button>
+      </div>
+
+      <div id="breadcrumb" class="breadcrumb hidden"></div>
+      <div id="browseView"></div>
+    </section>
+
+    <section class="section features-section">
+      <div class="section-heading centered">
+        <span class="section-kicker">WHY GYAAN ASHRAM</span>
+        <h2>Focused learning. Better preparation.</h2>
+      </div>
+      <div class="feature-grid">
+        <article class="feature-card"><div class="feature-icon">🎓</div><h3>Expert Faculty</h3><p>Experienced and dedicated teachers focused on clear learning.</p></article>
+        <article class="feature-card"><div class="feature-icon">💡</div><h3>Concept Based Learning</h3><p>Build strong fundamentals instead of memorising without understanding.</p></article>
+        <article class="feature-card"><div class="feature-icon">📊</div><h3>Regular Tests</h3><p>Test preparation and performance-focused study support.</p></article>
+        <article class="feature-card"><div class="feature-icon">📚</div><h3>Study Material</h3><p>Well-prepared notes and PDFs available in one place.</p></article>
+        <article class="feature-card"><div class="feature-icon">🎯</div><h3>Personal Attention</h3><p>Individual care that keeps students moving forward.</p></article>
+        <article class="feature-card"><div class="feature-icon">🧠</div><h3>Regular Doubt Sessions</h3><p>Clear doubts, strengthen concepts, and prepare with confidence.</p></article>
+      </div>
+    </section>
+
+    <section id="schedule" class="section schedule-section">
+      <div class="section-heading">
+        <div><span class="section-kicker">CLASS SCHEDULE</span><h2>Regular batches</h2></div>
+        <span class="coming-badge">Editable from Admin</span>
+      </div>
+      <div class="schedule-card">
+        <div class="schedule-row"><strong>Class 8</strong><span>Mon – Sat</span><b>4:00 PM – 5:00 PM</b></div>
+        <div class="schedule-row"><strong>Class 9</strong><span>Mon – Sat</span><b>5:00 PM – 6:00 PM</b></div>
+        <div class="schedule-row"><strong>Class 10</strong><span>Mon – Sat</span><b>6:00 PM – 7:00 PM</b></div>
+        <div class="schedule-row"><strong>Special / Doubt Session</strong><span>As announced</span><b>Check with the institute</b></div>
+      </div>
+    </section>
+
+    <section id="contact" class="section contact-section">
+      <div class="contact-card">
+        <div>
+          <span class="section-kicker">GET IN TOUCH</span>
+          <h2>Gyaan Ashram Career Institute</h2>
+          <p>Empowering Minds. Building Futures.</p>
+        </div>
+        <div class="contact-details">
+          <a href="tel:7808368359"><span>☎</span><div><small>Contact</small><strong>7808368359</strong></div></a>
+          <div><span>⌖</span><div><small>Address</small><strong>Koini Bazaar, Mishra Market, Gopalganj</strong></div></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+      <div><strong>GYAAN ASHRAM</strong><span>CAREER INSTITUTE</span></div>
+      <p>© <span id="year"></span> Gyaan Ashram Career Institute. All rights reserved.</p>
+      <button id="footerAdminBtn" class="footer-admin">Admin Login</button>
+    </div>
+  </footer>
+
+  <!-- Admin login modal -->
+  <div id="loginModal" class="modal hidden">
+    <div class="modal-backdrop" data-close="login"></div>
+    <div class="modal-panel small">
+      <button class="modal-close" data-close="login">×</button>
+      <span class="section-kicker">ADMIN AREA</span>
+      <h2>Admin Login</h2>
+      <p class="muted">Demo mode for Version 1. Replace this with Supabase Auth before public deployment.</p>
+      <form id="loginForm">
+        <label>Username<input id="loginUser" required autocomplete="username" value="admin" /></label>
+        <label>Password<input id="loginPass" required type="password" autocomplete="current-password" placeholder="Enter password" /></label>
+        <button class="primary-btn full" type="submit">Sign in</button>
+      </form>
+      <p class="demo-hint">Demo password: <code>admin123</code></p>
+    </div>
+  </div>
+
+  <!-- Admin dashboard -->
+  <div id="adminModal" class="modal hidden">
+    <div class="modal-backdrop" data-close="admin"></div>
+    <div class="modal-panel admin-panel">
+      <div class="admin-header">
+        <div><span class="section-kicker">GYAAN ASHRAM</span><h2>Admin Dashboard</h2></div>
+        <div class="admin-actions"><button id="addClassBtn" class="secondary-btn">+ Class</button><button id="addSubjectBtn" class="secondary-btn">+ Subject</button><button id="logoutBtn" class="text-btn">Logout</button></div>
+      </div>
+
+      <div class="admin-tabs">
+        <button class="tab active" data-tab="upload">Upload Material</button>
+        <button class="tab" data-tab="materialsAdmin">Manage Material</button>
+        <button class="tab" data-tab="structure">Classes & Subjects</button>
+      </div>
+
+      <div id="tab-upload" class="admin-tab-content">
+        <form id="uploadForm" class="upload-form">
+          <div class="form-grid">
+            <label>Class<select id="uploadClass" required></select></label>
+            <label>Subject<select id="uploadSubject" required></select></label>
+          </div>
+          <label>Chapter / Topic<input id="uploadTitle" required placeholder="e.g. Tissues in Action" /></label>
+          <label>Material / PDF name<input id="uploadFileTitle" required placeholder="e.g. Complete Notes" /></label>
+          <label>Description<textarea id="uploadDescription" rows="3" placeholder="Short description (optional)"></textarea></label>
+          <label>PDF file<input id="uploadFile" type="file" accept="application/pdf" required /></label>
+          <div class="upload-note">Version 1 stores uploaded files in this browser's local storage for demonstration. The production version will store PDFs in Supabase Storage.</div>
+          <button class="primary-btn" type="submit">Upload & Publish</button>
+        </form>
+      </div>
+
+      <div id="tab-materialsAdmin" class="admin-tab-content hidden">
+        <div id="adminMaterialsList"></div>
+      </div>
+
+      <div id="tab-structure" class="admin-tab-content hidden">
+        <div class="structure-grid">
+          <div><h3>Classes</h3><div id="classList" class="manage-list"></div></div>
+          <div><h3>Subjects</h3><div id="subjectList" class="manage-list"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Generic edit modal -->
+  <div id="editModal" class="modal hidden">
+    <div class="modal-backdrop" data-close="edit"></div>
+    <div class="modal-panel">
+      <button class="modal-close" data-close="edit">×</button>
+      <span class="section-kicker">EDIT MATERIAL</span>
+      <h2>Edit study material</h2>
+      <form id="editForm">
+        <input id="editId" type="hidden" />
+        <div class="form-grid">
+          <label>Class<select id="editClass" required></select></label>
+          <label>Subject<select id="editSubject" required></select></label>
+        </div>
+        <label>Chapter / Topic<input id="editTitle" required /></label>
+        <label>Material name<input id="editFileTitle" required /></label>
+        <label>Description<textarea id="editDescription" rows="3"></textarea></label>
+        <label>Replace PDF <span class="optional">(optional)</span><input id="editFile" type="file" accept="application/pdf" /></label>
+        <button class="primary-btn full" type="submit">Save Changes</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
