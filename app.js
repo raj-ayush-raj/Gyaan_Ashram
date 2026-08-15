@@ -2,7 +2,7 @@
 
 /* ===== Supabase Configuration ===== */
 var SUPABASE_URL = "https://vernnftdgswmnfihsvnr.supabase.co";
-var SUPABASE_KEY = "[REDACTED_JWT]";
+var SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZlcm5uZnRkZ3N3bW5maWhzdm5yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY3NjUzMDEsImV4cCI6MjEwMjM0MTMwMX0.kxWxEmABd7iwUKyJuHKUHrqGp8Z0c-paLp7Rxba3dNs";
 var THEME_KEY = "gyaan_ashram_theme";
 
 var supabase;
