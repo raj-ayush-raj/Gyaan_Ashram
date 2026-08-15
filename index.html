@@ -1,216 +1,604 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Gyaan Ashram Career Institute — study material, notes and academic resources." />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Gyaan Ashram Career Institute — study material and notes.">
   <title>Gyaan Ashram Career Institute</title>
-  <link rel="icon" href="assets/gyaan-ashram-logo.jpg" />
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" href="assets/gyaan-ashram-logo.jpg">
+  <style>
+    :root{
+      --navy:#071d4a;--navy-2:#0c2b63;--navy-3:#123d83;
+      --gold:#d3a42c;--gold-light:#f3cf69;--cream:#fbf7eb;
+      --ink:#14213d;--muted:#667085;--line:#e4e8ef;--white:#fff;
+      --danger:#b42318;--shadow:0 18px 55px rgba(7,29,74,.10);
+      --radius:20px;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;color:var(--ink);background:#fff;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.5}
+    button,input,textarea,select{font:inherit}
+    button{cursor:pointer}
+    a{text-decoration:none;color:inherit}
+    .container{width:min(1160px,calc(100% - 40px));margin:auto}
+
+    /* Header */
+    .header{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.97);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+    .nav{min-height:82px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+    .brand{display:flex;align-items:center;min-width:0}
+    .brand img{width:214px;height:68px;object-fit:contain;object-position:center;background:#fff;border-radius:0 34px 34px 0}
+    .nav-links{display:flex;align-items:center;gap:8px}
+    .nav-links a,.admin-link{padding:10px 13px;border-radius:10px;font-size:13px;font-weight:800;color:#344054}
+    .nav-links a:hover{background:#f5f7fa;color:var(--navy)}
+    .admin-link{border:1px solid #e0c15d;background:#fffaf0;color:#825d00}
+    .menu{display:none;border:0;background:transparent;font-size:26px;color:var(--navy)}
+
+    /* Hero — CSS-built visual language, no promotional PNG background */
+    .hero{position:relative;overflow:hidden;background:
+      radial-gradient(circle at 84% 18%,rgba(243,207,105,.20),transparent 24%),
+      linear-gradient(135deg,var(--navy),var(--navy-2) 58%,#174a8f)}
+    .hero:before{content:"";position:absolute;left:-12%;top:-44%;width:70%;height:130%;border-radius:50%;background:rgba(255,255,255,.035);transform:rotate(-9deg)}
+    .hero:after{content:"";position:absolute;right:-8%;bottom:-55%;width:58%;height:115%;border-radius:50%;border:2px solid rgba(243,207,105,.28);transform:rotate(-8deg)}
+    .hero-inner{position:relative;z-index:2;min-height:430px;display:grid;grid-template-columns:1.05fr .95fr;align-items:center;gap:35px;padding:65px 0}
+    .hero-copy{color:#fff;max-width:620px}
+    .eyebrow{display:inline-flex;align-items:center;gap:10px;color:var(--gold-light);font-size:11px;font-weight:900;letter-spacing:.18em;text-transform:uppercase}
+    .eyebrow:before,.eyebrow:after{content:"";height:1px;width:35px;background:var(--gold)}
+    .hero h1{font-family:Georgia,serif;font-size:clamp(42px,6vw,72px);line-height:.98;letter-spacing:-.035em;margin:16px 0 18px}
+    .hero h1 span{display:block;color:var(--gold-light)}
+    .hero p{font-size:17px;color:#d9e4f5;max-width:540px;margin:0 0 26px}
+    .hero-actions{display:flex;gap:12px;flex-wrap:wrap}
+    .primary{display:inline-flex;align-items:center;justify-content:center;gap:9px;background:linear-gradient(135deg,var(--gold-light),var(--gold));border:0;color:#17284b;font-weight:900;padding:12px 18px;border-radius:11px;box-shadow:0 10px 25px rgba(0,0,0,.14)}
+    .secondary{display:inline-flex;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.08);color:#fff;padding:12px 18px;border-radius:11px;font-weight:800}
+    .hero-visual{position:relative;min-height:320px;display:grid;place-items:center}
+    .arch{width:min(390px,92%);aspect-ratio:1.08;border:1px solid rgba(243,207,105,.55);border-radius:210px 210px 24px 24px;padding:12px;position:relative}
+    .arch-inner{height:100%;border-radius:195px 195px 15px 15px;background:linear-gradient(155deg,#fff 0%,#f9f2de 62%,#fff 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:35px 25px;box-shadow:inset 0 0 0 1px rgba(7,29,74,.06)}
+    .arch-inner .mini-logo{width:108px;height:108px;object-fit:contain;border-radius:50%;border:1px solid #e6c967;padding:8px;background:#fff;margin-bottom:12px}
+    .arch-inner strong{font-family:Georgia,serif;color:var(--navy);font-size:25px;letter-spacing:.05em}
+    .arch-inner span{font-size:10px;letter-spacing:.16em;font-weight:900;color:#9a6d00;margin-top:5px}
+    .gold-dot{position:absolute;width:14px;height:14px;border-radius:50%;background:var(--gold-light);box-shadow:0 0 0 7px rgba(243,207,105,.12)}
+    .d1{top:18%;right:2%}.d2{bottom:17%;left:1%}.d3{top:7%;left:13%}
+
+    /* Section */
+    .section{padding:72px 0}
+    .section-head{text-align:center;margin-bottom:32px}
+    .section-kicker{display:block;color:#a07300;font-size:11px;font-weight:900;letter-spacing:.18em}
+    h2{font-family:Georgia,serif;color:var(--navy);font-size:clamp(30px,4vw,44px);line-height:1.05;margin:7px 0 8px}
+    .section-head p{color:var(--muted);margin:0 auto;max-width:600px}
+
+    /* Study material */
+    .study{background:linear-gradient(#fff,var(--cream))}
+    .class-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+    .class-card{position:relative;overflow:hidden;background:#fff;border:1px solid var(--line);border-radius:18px;padding:24px;min-height:170px;box-shadow:0 8px 28px rgba(7,29,74,.06);transition:transform .18s,box-shadow .18s,border-color .18s}
+    .class-card:before{content:"";position:absolute;left:0;top:0;right:0;height:5px;background:linear-gradient(90deg,var(--navy),var(--gold))}
+    .class-card:hover{transform:translateY(-4px);border-color:#e2c45f;box-shadow:var(--shadow)}
+    .class-number{font-size:10px;letter-spacing:.17em;color:#a07300;font-weight:900}
+    .class-card h3{font-family:Georgia,serif;color:var(--navy);font-size:28px;margin:8px 0 5px}
+    .class-card p{margin:0 0 17px;color:var(--muted);font-size:13px}
+    .explore{display:inline-flex;align-items:center;gap:7px;color:var(--navy);font-size:12px;font-weight:900}
+    .explore span{color:var(--gold);font-size:18px}
+
+    /* Browse */
+    .browse-panel{margin-top:28px}
+    .breadcrumb{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:20px;color:var(--muted);font-size:13px;font-weight:800}
+    .breadcrumb button{border:0;background:transparent;color:var(--navy);padding:0;font-weight:900}
+    .subject-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}
+    .subject-card{border:1px solid var(--line);background:#fff;border-radius:15px;padding:20px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 6px 20px rgba(7,29,74,.05);transition:.18s}
+    .subject-card:hover{border-color:#dfc15b;transform:translateY(-2px)}
+    .subject-card h3{margin:0;font-size:18px;color:var(--navy)}
+    .notes{display:grid;gap:16px}
+    .note-group{border:1px solid var(--line);border-radius:17px;background:#fff;overflow:hidden}
+    .note-group-head{padding:18px 20px;background:#f8fafc;border-bottom:1px solid var(--line)}
+    .note-group-head h3{margin:0;color:var(--navy);font-size:19px}
+    .note-group-head p{margin:4px 0 0;color:var(--muted);font-size:12px}
+    .note-item{display:flex;align-items:center;justify-content:space-between;gap:15px;padding:15px 20px}
+    .note-item+.note-item{border-top:1px solid var(--line)}
+    .note-main{display:flex;align-items:center;gap:12px;min-width:0}
+    .pdf{width:40px;height:46px;border-radius:9px;background:#eef3fb;color:#0d3a83;display:grid;place-items:center;font-weight:900;font-size:11px;flex:none}
+    .note-main strong{display:block;font-size:14px}
+    .meta{font-size:11px;color:var(--muted);margin-top:2px}
+    .note-actions{display:flex;gap:7px}
+    .small{border:1px solid #dce2eb;background:#fff;color:var(--navy);border-radius:9px;padding:8px 11px;font-size:11px;font-weight:900}
+    .small.dark{background:var(--navy);border-color:var(--navy);color:#fff}
+    .back-btn{border:0;background:transparent;color:var(--navy);font-weight:900;padding:0;margin-bottom:16px}
+    .empty{border:1px dashed #cbd4e1;border-radius:15px;padding:35px;text-align:center;color:var(--muted);background:#fff}
+    .empty strong{display:block;color:var(--navy);margin-bottom:4px}
+
+    /* Secondary info */
+    .info-strip{background:var(--navy);color:#fff}
+    .info-grid{display:grid;grid-template-columns:repeat(3,1fr)}
+    .info-card{padding:27px 28px;border-right:1px solid rgba(255,255,255,.15)}
+    .info-card:last-child{border-right:0}
+    .info-icon{font-size:25px;color:var(--gold-light);margin-bottom:8px}
+    .info-card h3{margin:0 0 5px;font-family:Georgia,serif;font-size:22px}
+    .info-card p{margin:0 0 14px;color:#c6d3e8;font-size:13px}
+    .info-link{display:inline-flex;color:var(--gold-light);font-weight:900;font-size:12px}
+
+    /* Contact */
+    .contact-card{display:grid;grid-template-columns:1.2fr .8fr;gap:25px;background:#fbfaf6;border:1px solid #eee4c7;border-radius:20px;padding:34px}
+    .contact-card h2{margin-top:5px}
+    .contact-details{display:grid;gap:10px}
+    .contact-item{display:flex;gap:12px;align-items:center;background:#fff;border:1px solid var(--line);padding:12px 14px;border-radius:12px}
+    .contact-item .icon{width:35px;height:35px;border-radius:50%;display:grid;place-items:center;background:#fff7dd;color:#916800;flex:none}
+    .contact-item small{display:block;color:var(--muted);font-size:10px}
+    .contact-item strong{display:block;font-size:13px;color:var(--navy)}
+
+    /* Footer */
+    footer{background:#041536;color:#cdd8e8;padding:24px 0}
+    .footer-row{display:flex;align-items:center;justify-content:space-between;gap:20px}
+    .footer-brand strong{font-family:Georgia,serif;color:#fff;letter-spacing:.06em}
+    .footer-brand span{display:block;color:var(--gold-light);font-size:9px;letter-spacing:.17em}
+    .footer-row p{font-size:11px;margin:0}
+    .footer-admin{border:0;background:transparent;color:#91a4c2;font-size:11px;font-weight:800}
+
+    /* Modals/admin */
+    .hidden{display:none!important}
+    .modal{position:fixed;inset:0;z-index:100;display:grid;place-items:center;padding:18px}
+    .backdrop{position:absolute;inset:0;background:rgba(2,10,28,.72);backdrop-filter:blur(4px)}
+    .modal-box{position:relative;z-index:2;background:#fff;border-radius:20px;width:min(1020px,100%);max-height:92vh;overflow:auto;box-shadow:0 30px 90px rgba(0,0,0,.28)}
+    .login-box{width:min(420px,100%);padding:30px}
+    .close{position:absolute;right:15px;top:14px;width:32px;height:32px;border:0;border-radius:50%;background:#f1f3f6;color:#667085;font-size:20px}
+    label{display:block;font-size:12px;font-weight:900;color:#344054;margin-bottom:14px}
+    input,textarea,select{width:100%;display:block;margin-top:6px;border:1px solid #d9dfe8;border-radius:10px;padding:10px 11px;outline:0;background:#fff;color:var(--ink)}
+    input:focus,textarea:focus,select:focus{border-color:#9db3d8;box-shadow:0 0 0 3px #edf3fb}
+    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .login-hint{font-size:11px;color:var(--muted);text-align:center}
+    .admin-head{padding:24px 28px 18px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:20px}
+    .admin-head h2{margin:4px 0 0;font-size:30px}
+    .admin-actions{display:flex;gap:7px;flex-wrap:wrap}
+    .outline{border:1px solid #dce2eb;background:#fff;color:var(--navy);padding:9px 11px;border-radius:9px;font-size:11px;font-weight:900}
+    .admin-tabs{display:flex;gap:2px;padding:0 28px;border-bottom:1px solid var(--line);overflow:auto}
+    .tab{border:0;background:transparent;padding:13px 14px;color:#7a8699;font-size:12px;font-weight:900;border-bottom:3px solid transparent;white-space:nowrap}
+    .tab.active{color:var(--navy);border-bottom-color:var(--gold)}
+    .admin-body{padding:25px 28px}
+    .upload-note{font-size:11px;color:#667085;background:#f7f9fc;border-radius:10px;padding:10px 12px;margin:0 0 15px}
+    .admin-row{display:grid;grid-template-columns:1fr auto;gap:15px;align-items:center;padding:14px;border:1px solid var(--line);border-radius:13px;margin-bottom:9px}
+    .admin-row strong{font-size:13px;color:var(--navy)}
+    .admin-row small{display:block;color:var(--muted);font-size:11px;margin-top:3px}
+    .row-actions{display:flex;gap:6px}
+    .danger{color:var(--danger);border-color:#efc5c0}
+    .manage-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+    .manage-box{border:1px solid var(--line);border-radius:13px;overflow:hidden}
+    .manage-box h3{margin:0;padding:13px 15px;background:#f8fafc;color:var(--navy);font-size:15px}
+    .manage-item{display:flex;align-items:center;justify-content:space-between;padding:11px 14px;font-size:12px}
+    .manage-item+.manage-item{border-top:1px solid var(--line)}
+    .toast{position:fixed;right:18px;bottom:18px;z-index:200;background:#0b2858;color:#fff;padding:11px 14px;border-radius:10px;font-size:12px;font-weight:800;box-shadow:var(--shadow);opacity:0;transform:translateY(10px);pointer-events:none;transition:.2s}
+    .toast.show{opacity:1;transform:translateY(0)}
+
+    /* Responsive */
+    @media(max-width:900px){
+      .brand img{width:190px}
+      .hero-inner{grid-template-columns:1fr;padding:58px 0 50px}
+      .hero-copy{text-align:center;margin:auto}
+      .hero-actions{justify-content:center}
+      .hero-visual{min-height:280px}
+      .class-grid{grid-template-columns:repeat(2,1fr)}
+      .subject-grid{grid-template-columns:repeat(2,1fr)}
+      .info-grid{grid-template-columns:1fr}
+      .info-card{border-right:0;border-bottom:1px solid rgba(255,255,255,.15)}
+      .info-card:last-child{border-bottom:0}
+    }
+    @media(max-width:700px){
+      .container{width:min(100% - 28px,1160px)}
+      .nav{min-height:68px}
+      .brand img{width:175px;height:58px}
+      .nav-links{display:none;position:absolute;top:68px;left:0;right:0;background:#fff;border-bottom:1px solid var(--line);padding:10px 14px;flex-direction:column;align-items:stretch;box-shadow:0 12px 30px rgba(0,0,0,.08)}
+      .nav-links.open{display:flex}
+      .nav-links a,.admin-link{padding:11px 12px}
+      .menu{display:block}
+      .hero-inner{min-height:0;padding:50px 0 42px}
+      .hero h1{font-size:47px}
+      .hero p{font-size:15px}
+      .hero-visual{min-height:250px}
+      .arch{width:min(290px,86%)}
+      .arch-inner .mini-logo{width:82px;height:82px}
+      .arch-inner strong{font-size:20px}
+      .section{padding:54px 0}
+      .class-grid,.subject-grid{grid-template-columns:1fr}
+      .class-card{min-height:145px}
+      .note-item{align-items:flex-start;flex-direction:column}
+      .note-actions{width:100%}
+      .small{flex:1}
+      .contact-card{grid-template-columns:1fr;padding:24px}
+      .footer-row{flex-direction:column;align-items:flex-start}
+      .form-grid,.manage-grid{grid-template-columns:1fr}
+      .admin-head{display:block;padding:20px}
+      .admin-actions{margin-top:13px}
+      .admin-tabs{padding:0 15px}
+      .admin-body{padding:20px 15px}
+      .admin-row{grid-template-columns:1fr}
+      .row-actions{width:100%}
+      .row-actions .small{flex:1}
+    }
+  </style>
 </head>
 <body>
-  <div id="toast" class="toast" aria-live="polite"></div>
+  <div id="toast" class="toast"></div>
 
-  
-<header class="site-header">
-  <a class="brand" href="#home" aria-label="Gyaan Ashram home">
-    <div class="brand-logo-frame">
-      <img src="assets/gyaan-ashram-logo.jpg" alt="Gyaan Ashram Career Institute" />
+  <header class="header">
+    <div class="container nav">
+      <a class="brand" href="#home" aria-label="Gyaan Ashram home">
+        <img src="assets/gyaan-ashram-logo.jpg" alt="Gyaan Ashram Career Institute">
+      </a>
+      <nav id="navLinks" class="nav-links">
+        <a href="#home">Home</a>
+        <a href="#study">Study Material</a>
+        <a href="#schedule">Schedule</a>
+        <a href="#contact">Contact</a>
+        <button id="adminBtn" class="admin-link">Admin Login</button>
+      </nav>
+      <button id="menuBtn" class="menu" aria-label="Open menu">☰</button>
     </div>
-  </a>
-  <nav class="top-nav">
-    <a class="active" href="#home">Home</a>
-    <a href="#materials">Study Material</a>
-    <a href="#schedule">Schedule</a>
-    <a href="#about">About Us</a>
-    <a href="#contact">Contact</a>
-    <button id="adminNavBtn" class="nav-admin">🔒 Admin Login</button>
-  </nav>
-  <button id="menuBtn" class="menu-btn" aria-label="Open menu">☰</button>
-</header>
+  </header>
 
-  
-<main id="home">
-  <section class="hero-v2">
-    <div class="hero-bg"><img src="assets/gyaan-ashram-banner.jpg" alt="" /></div>
-    <div class="hero-shade"></div>
-    <div class="hero-center">
-      <div class="hero-panel">
-        <span class="eyebrow">KNOWLEDGE TODAY</span>
-        <h1>Learners Today,<br><span>Success Tomorrow</span></h1>
-        <div class="gold-rule"><i></i><b>✦</b><i></i></div>
-        <p class="hero-tagline">EMPOWERING MINDS. BUILDING FUTURES.</p>
-        <p class="hero-sub">Better education for a brighter tomorrow — with focused learning, strong concepts and the right study material.</p>
-        <a class="primary-btn hero-btn" href="#materials">Explore Study Material <span>→</span></a>
-      </div>
-    </div>
-
-    <div class="hero-features">
-      <div><span>🎓</span><strong>Expert Faculty</strong><small>Experienced & Dedicated Teachers</small></div>
-      <div><span>🎯</span><strong>Concept Based Learning</strong><small>Focus on Clear Concepts</small></div>
-      <div><span>📈</span><strong>Regular Test Series</strong><small>Performance Analysis</small></div>
-      <div><span>👨‍🏫</span><strong>Personal Attention</strong><small>Individual Care</small></div>
-      <div><span>💡</span><strong>Smart Classroom</strong><small>Modern Learning Environment</small></div>
-      <div><span>📚</span><strong>Study Material</strong><small>Well Prepared Notes & PDFs</small></div>
-      <div><span>🏆</span><strong>Career Guidance</strong><small>Right Direction</small></div>
-      <div><span>🕘</span><strong>Doubt Sessions</strong><small>Clear Doubts, Strong Concepts</small></div>
-    </div>
-  </section>
-
-  <section class="section material-panel" id="materials">
-    <div class="section-heading centered">
-      <span class="section-kicker">STUDY MATERIAL</span>
-      <h2>Access Study Material</h2>
-      <p class="section-lead">Select your class to explore notes and study material.</p>
-    </div>
-    <div id="breadcrumb" class="breadcrumb hidden"></div>
-    <div id="browseView"></div>
-  </section>
-
-  <section class="trust-strip">
-    <div><span class="strip-icon">📅</span><div><strong>Schedule</strong><small>Check class timings, tests & important dates.</small><a href="#schedule">View Schedule</a></div></div>
-    <div><span class="strip-icon">ℹ</span><div><strong>About Us</strong><small>Learn more about Gyaan Ashram Career Institute.</small><a href="#about">Learn More</a></div></div>
-    <div><span class="strip-icon">☎</span><div><strong>Contact Us</strong><small>Have any questions? Get in touch with us.</small><a href="#contact">Contact Now</a></div></div>
-  </section>
-
-  <section id="about" class="section about-section">
-    <div class="about-card">
-      <div class="about-copy">
-        <span class="section-kicker">ABOUT GYAAN ASHRAM</span>
-        <h2>Learning with purpose.<br><span>Preparing for tomorrow.</span></h2>
-        <p>Gyaan Ashram Career Institute focuses on clear concepts, regular practice, personal attention and quality study material to help students build a stronger academic foundation.</p>
-        <div class="about-points">
-          <span>✓ Concept-focused teaching</span>
-          <span>✓ Regular practice & tests</span>
-          <span>✓ Dedicated study material</span>
-          <span>✓ Doubt-clearing support</span>
+  <main id="home">
+    <section class="hero">
+      <div class="container hero-inner">
+        <div class="hero-copy">
+          <span class="eyebrow">Knowledge Today • Success Tomorrow</span>
+          <h1>Empowering Minds.<span>Building Futures.</span></h1>
+          <p>Access your class notes, study material and PDFs in one simple place.</p>
+          <div class="hero-actions">
+            <a class="primary" href="#study">Explore Study Material →</a>
+            <a class="secondary" href="#schedule">View Schedule</a>
+          </div>
+        </div>
+        <div class="hero-visual" aria-hidden="true">
+          <span class="gold-dot d1"></span><span class="gold-dot d2"></span><span class="gold-dot d3"></span>
+          <div class="arch">
+            <div class="arch-inner">
+              <img class="mini-logo" src="assets/gyaan-ashram-logo.jpg" alt="">
+              <strong>GYAAN ASHRAM</strong>
+              <span>CAREER INSTITUTE</span>
+              <div style="height:1px;width:120px;background:#d3a42c;margin:12px 0"></div>
+              <small style="color:#667085;font-weight:700">Study • Prepare • Grow • Succeed</small>
+            </div>
+          </div>
         </div>
       </div>
-      <div class="about-visual">
-        <img src="assets/gyaan-ashram-logo.jpg" alt="Gyaan Ashram Career Institute" />
+    </section>
+
+    <section id="study" class="section study">
+      <div class="container">
+        <div class="section-head">
+          <span class="section-kicker">STUDY MATERIAL</span>
+          <h2>Choose your class</h2>
+          <p>Find your subject and access the latest notes and PDFs uploaded by Gyaan Ashram.</p>
+        </div>
+        <div id="classGrid" class="class-grid"></div>
+        <div id="browsePanel" class="browse-panel"></div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <section id="schedule" class="section schedule-section">
-    <div class="section-heading centered">
-      <span class="section-kicker">CLASS SCHEDULE</span>
-      <h2>Regular batches</h2>
-      <p class="section-lead">Timings can be updated from the website administration area in a future production release.</p>
-    </div>
-    <div class="schedule-card">
-      <div class="schedule-row"><strong>Class 8</strong><span>Mon – Sat</span><b>4:00 PM – 5:00 PM</b></div>
-      <div class="schedule-row"><strong>Class 9</strong><span>Mon – Sat</span><b>5:00 PM – 6:00 PM</b></div>
-      <div class="schedule-row"><strong>Class 10</strong><span>Mon – Sat</span><b>6:00 PM – 7:00 PM</b></div>
-      <div class="schedule-row"><strong>Special / Doubt Session</strong><span>As announced</span><b>Check with the institute</b></div>
-    </div>
-  </section>
-
-  <section id="contact" class="section contact-section">
-    <div class="contact-card">
-      <div class="contact-main">
-        <span class="section-kicker">GET IN TOUCH</span>
-        <h2>Gyaan Ashram Career Institute</h2>
-        <p>Empowering Minds. Building Futures.</p>
+    <section id="schedule" class="info-strip">
+      <div class="container info-grid">
+        <article class="info-card">
+          <div class="info-icon">◷</div>
+          <h3>Schedule</h3>
+          <p>Check regular class timings and important study sessions.</p>
+          <a class="info-link" href="#schedule">View schedule ↓</a>
+        </article>
+        <article class="info-card">
+          <div class="info-icon">✦</div>
+          <h3>About Gyaan Ashram</h3>
+          <p>A focused learning environment built around clear concepts and strong preparation.</p>
+          <a class="info-link" href="#contact">Know more ↓</a>
+        </article>
+        <article class="info-card">
+          <div class="info-icon">☎</div>
+          <h3>Contact</h3>
+          <p>Have a question about classes or study material? Get in touch with us.</p>
+          <a class="info-link" href="#contact">Contact us ↓</a>
+        </article>
       </div>
-      <div class="contact-details">
-        <a href="tel:7808368359"><span>☎</span><div><small>Contact</small><strong>7808368359</strong></div></a>
-        <div><span>⌖</span><div><small>Address</small><strong>Koini Bazaar, Mishra Market, Gopalganj</strong></div></div>
+    </section>
+
+    <section class="section" style="padding-bottom:45px">
+      <div class="container">
+        <div class="section-head" style="margin-bottom:24px">
+          <span class="section-kicker">CLASS TIMINGS</span>
+          <h2>Regular batches</h2>
+        </div>
+        <div id="scheduleList" class="notes"></div>
       </div>
+    </section>
+
+    <section id="contact" class="section" style="padding-top:35px">
+      <div class="container">
+        <div class="contact-card">
+          <div>
+            <span class="section-kicker">GYAAN ASHRAM CAREER INSTITUTE</span>
+            <h2>Empowering Minds.<br>Building Futures.</h2>
+            <p style="color:var(--muted);max-width:560px">Study material is now organised class-wise so students can quickly find the notes they need.</p>
+          </div>
+          <div class="contact-details">
+            <a class="contact-item" href="tel:7808368359">
+              <span class="icon">☎</span><div><small>Contact</small><strong>7808368359</strong></div>
+            </a>
+            <div class="contact-item">
+              <span class="icon">⌖</span><div><small>Address</small><strong>Koini Bazaar, Mishra Market, Gopalganj</strong></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container footer-row">
+      <div class="footer-brand"><strong>GYAAN ASHRAM</strong><span>CAREER INSTITUTE</span></div>
+      <p>© <span id="year"></span> Gyaan Ashram Career Institute. All rights reserved.</p>
+      <button id="footerAdmin" class="footer-admin">Admin Login</button>
     </div>
-  </section>
-</main>
+  </footer>
 
-<footer>
-  <div class="footer-inner">
-    <div><strong>GYAAN ASHRAM</strong><span>CAREER INSTITUTE</span></div>
-    <p>© <span id="year"></span> Gyaan Ashram Career Institute. All rights reserved.</p>
-    <button id="footerAdminBtn" class="footer-admin">Admin Login</button>
-  </div>
-</footer>
-
-  <!-- Admin login modal -->
+  <!-- Admin Login -->
   <div id="loginModal" class="modal hidden">
-    <div class="modal-backdrop" data-close="login"></div>
-    <div class="modal-panel small">
-      <button class="modal-close" data-close="login">×</button>
+    <div class="backdrop" data-close="login"></div>
+    <div class="modal-box login-box">
+      <button class="close" data-close="login">×</button>
       <span class="section-kicker">ADMIN AREA</span>
-      <h2>Admin Login</h2>
-      <p class="muted">Demo mode for Version 1. Replace this with Supabase Auth before public deployment.</p>
+      <h2 style="margin-top:6px">Admin Login</h2>
+      <p style="color:var(--muted);font-size:13px">Manage classes, subjects and study material.</p>
       <form id="loginForm">
-        <label>Username<input id="loginUser" required autocomplete="username" value="admin" /></label>
-        <label>Password<input id="loginPass" required type="password" autocomplete="current-password" placeholder="Enter password" /></label>
-        <button class="primary-btn full" type="submit">Sign in</button>
+        <label>Username<input id="loginUser" value="admin" required autocomplete="username"></label>
+        <label>Password<input id="loginPass" type="password" placeholder="Enter password" required autocomplete="current-password"></label>
+        <button class="primary" style="width:100%" type="submit">Sign in</button>
       </form>
-      <p class="demo-hint">Demo password: <code>admin123</code></p>
+      <p class="login-hint">Version 3 demo credentials: <b>admin / admin123</b></p>
     </div>
   </div>
 
-  <!-- Admin dashboard -->
+  <!-- Admin Dashboard -->
   <div id="adminModal" class="modal hidden">
-    <div class="modal-backdrop" data-close="admin"></div>
-    <div class="modal-panel admin-panel">
-      <div class="admin-header">
+    <div class="backdrop" data-close="admin"></div>
+    <div class="modal-box">
+      <div class="admin-head">
         <div><span class="section-kicker">GYAAN ASHRAM</span><h2>Admin Dashboard</h2></div>
-        <div class="admin-actions"><button id="addClassBtn" class="secondary-btn">+ Class</button><button id="addSubjectBtn" class="secondary-btn">+ Subject</button><button id="logoutBtn" class="text-btn">Logout</button></div>
+        <div class="admin-actions">
+          <button id="addClass" class="outline">+ Add Class</button>
+          <button id="addSubject" class="outline">+ Add Subject</button>
+          <button id="logout" class="outline">Logout</button>
+        </div>
       </div>
-
       <div class="admin-tabs">
         <button class="tab active" data-tab="upload">Upload Material</button>
-        <button class="tab" data-tab="materialsAdmin">Manage Material</button>
+        <button class="tab" data-tab="manage">Manage Material</button>
         <button class="tab" data-tab="structure">Classes & Subjects</button>
       </div>
 
-      <div id="tab-upload" class="admin-tab-content">
-        <form id="uploadForm" class="upload-form">
+      <div id="tab-upload" class="admin-body">
+        <form id="uploadForm">
           <div class="form-grid">
             <label>Class<select id="uploadClass" required></select></label>
             <label>Subject<select id="uploadSubject" required></select></label>
           </div>
-          <label>Chapter / Topic<input id="uploadTitle" required placeholder="e.g. Tissues in Action" /></label>
-          <label>Material / PDF name<input id="uploadFileTitle" required placeholder="e.g. Complete Notes" /></label>
+          <label>Chapter / Topic<input id="uploadTopic" required placeholder="e.g. Tissues in Action"></label>
+          <label>PDF / Material name<input id="uploadName" required placeholder="e.g. Complete Notes"></label>
           <label>Description<textarea id="uploadDescription" rows="3" placeholder="Short description (optional)"></textarea></label>
-          <label>PDF file<input id="uploadFile" type="file" accept="application/pdf" required /></label>
-          <div class="upload-note">Version 1 stores uploaded files in this browser's local storage for demonstration. The production version will store PDFs in Supabase Storage.</div>
-          <button class="primary-btn" type="submit">Upload & Publish</button>
+          <label>PDF file<input id="uploadFile" type="file" accept="application/pdf" required></label>
+          <div class="upload-note">Demo mode stores uploads in this browser. The production build will use Supabase Storage so all devices see the same files.</div>
+          <button class="primary" type="submit">Upload & Publish</button>
         </form>
       </div>
 
-      <div id="tab-materialsAdmin" class="admin-tab-content hidden">
-        <div id="adminMaterialsList"></div>
-      </div>
-
-      <div id="tab-structure" class="admin-tab-content hidden">
-        <div class="structure-grid">
-          <div><h3>Classes</h3><div id="classList" class="manage-list"></div></div>
-          <div><h3>Subjects</h3><div id="subjectList" class="manage-list"></div></div>
-        </div>
-      </div>
+      <div id="tab-manage" class="admin-body hidden"><div id="adminMaterials"></div></div>
+      <div id="tab-structure" class="admin-body hidden"><div class="manage-grid"><div class="manage-box"><h3>Classes</h3><div id="classManage"></div></div><div class="manage-box"><h3>Subjects</h3><div id="subjectManage"></div></div></div></div>
     </div>
   </div>
 
-  <!-- Generic edit modal -->
+  <!-- Edit -->
   <div id="editModal" class="modal hidden">
-    <div class="modal-backdrop" data-close="edit"></div>
-    <div class="modal-panel">
-      <button class="modal-close" data-close="edit">×</button>
+    <div class="backdrop" data-close="edit"></div>
+    <div class="modal-box login-box" style="width:min(620px,100%)">
+      <button class="close" data-close="edit">×</button>
       <span class="section-kicker">EDIT MATERIAL</span>
-      <h2>Edit study material</h2>
+      <h2 style="margin-top:6px">Update study material</h2>
       <form id="editForm">
-        <input id="editId" type="hidden" />
+        <input id="editId" type="hidden">
         <div class="form-grid">
           <label>Class<select id="editClass" required></select></label>
           <label>Subject<select id="editSubject" required></select></label>
         </div>
-        <label>Chapter / Topic<input id="editTitle" required /></label>
-        <label>Material name<input id="editFileTitle" required /></label>
+        <label>Chapter / Topic<input id="editTopic" required></label>
+        <label>PDF / Material name<input id="editName" required></label>
         <label>Description<textarea id="editDescription" rows="3"></textarea></label>
-        <label>Replace PDF <span class="optional">(optional)</span><input id="editFile" type="file" accept="application/pdf" /></label>
-        <button class="primary-btn full" type="submit">Save Changes</button>
+        <label>Replace PDF <span style="font-weight:500;color:#8a94a5">(optional)</span><input id="editFile" type="file" accept="application/pdf"></label>
+        <button class="primary" style="width:100%" type="submit">Save Changes</button>
       </form>
     </div>
   </div>
 
-  <script src="app.js"></script>
+  <!-- Add class -->
+  <div id="classModal" class="modal hidden">
+    <div class="backdrop" data-close="class"></div>
+    <div class="modal-box login-box">
+      <button class="close" data-close="class">×</button>
+      <span class="section-kicker">ADMIN</span><h2 style="margin-top:6px">Add Class</h2>
+      <form id="classForm"><label>Class name<input id="className" placeholder="e.g. Class 11" required></label><button class="primary" style="width:100%">Add Class</button></form>
+    </div>
+  </div>
+
+  <!-- Add subject -->
+  <div id="subjectModal" class="modal hidden">
+    <div class="backdrop" data-close="subject"></div>
+    <div class="modal-box login-box">
+      <button class="close" data-close="subject">×</button>
+      <span class="section-kicker">ADMIN</span><h2 style="margin-top:6px">Add Subject</h2>
+      <form id="subjectForm">
+        <label>Class<select id="subjectClass" required></select></label>
+        <label>Subject name<input id="subjectName" placeholder="e.g. Social Science" required></label>
+        <button class="primary" style="width:100%">Add Subject</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const DATA_KEY="gyaan_ashram_v3_data", FILE_KEY="gyaan_ashram_v3_files";
+    const seed={
+      classes:[{id:"c8",name:"Class 8"},{id:"c9",name:"Class 9"},{id:"c10",name:"Class 10"}],
+      subjects:[
+        {id:"s8m",classId:"c8",name:"Mathematics"},{id:"s8s",classId:"c8",name:"Science"},
+        {id:"s9m",classId:"c9",name:"Mathematics"},{id:"s9s",classId:"c9",name:"Science"},
+        {id:"s10m",classId:"c10",name:"Mathematics"},{id:"s10s",classId:"c10",name:"Science"},{id:"s10e",classId:"c10",name:"English"}
+      ],
+      materials:[{
+        id:"m1",classId:"c9",subjectId:"s9s",title:"Tissues in Action",
+        description:"Class 9 Science notes covering plant and animal tissues.",
+        uploadedAt:"2026-08-15T08:00:00",
+        files:[{id:"f1",name:"Complete Notes",filename:"tissues-in-action.pdf",demoPath:"assets/tissues-in-action.pdf",sizeLabel:"13 pages"}]
+      }],
+      schedule:[
+        {className:"Class 8",days:"Mon – Sat",time:"4:00 PM – 5:00 PM"},
+        {className:"Class 9",days:"Mon – Sat",time:"5:00 PM – 6:00 PM"},
+        {className:"Class 10",days:"Mon – Sat",time:"6:00 PM – 7:00 PM"},
+        {className:"Special / Doubt Session",days:"As announced",time:"Check with the institute"}
+      ]
+    };
+    let data=load(DATA_KEY,seed), files=load(FILE_KEY,{});
+    let browse={classId:null,subjectId:null};
+    const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+    const clone=o=>JSON.parse(JSON.stringify(o));
+    function load(key,fallback){try{return JSON.parse(localStorage.getItem(key))||clone(fallback)}catch{return clone(fallback)}}
+    function save(){localStorage.setItem(DATA_KEY,JSON.stringify(data));localStorage.setItem(FILE_KEY,JSON.stringify(files))}
+    function uid(p){return p+"-"+Date.now().toString(36)+Math.random().toString(36).slice(2,7)}
+    function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+    function cls(id){return data.classes.find(x=>x.id===id)?.name||"Unknown Class"}
+    function sub(id){return data.subjects.find(x=>x.id===id)?.name||"Unknown Subject"}
+    function date(v){return new Date(v).toLocaleDateString("en-IN",{day:"2-digit",month:"short",year:"numeric"})}
+    function toast(msg){let t=$("#toast");t.textContent=msg;t.classList.add("show");clearTimeout(window._t);window._t=setTimeout(()=>t.classList.remove("show"),2400)}
+    function modal(id,open=true){$(id).classList.toggle("hidden",!open);if(open)document.body.style.overflow="hidden";else if(!$$(".modal:not(.hidden)").length)document.body.style.overflow=""}
+
+    function renderClasses(){
+      $("#classGrid").innerHTML=data.classes.map((c,i)=>`
+        <article class="class-card" onclick="browseClass('${c.id}')">
+          <span class="class-number">CLASS ${String(i+1).padStart(2,"0")}</span>
+          <h3>${esc(c.name)}</h3>
+          <p>${data.subjects.filter(s=>s.classId===c.id).length} subject${data.subjects.filter(s=>s.classId===c.id).length===1?"":"s"} available</p>
+          <span class="explore">Explore <span>→</span></span>
+        </article>`).join("")||`<div class="empty"><strong>No classes available</strong>Admin can add classes.</div>`;
+    }
+    function renderBrowse(){
+      const panel=$("#browsePanel");
+      if(!browse.classId){panel.innerHTML="";return}
+      const c=cls(browse.classId);
+      if(!browse.subjectId){
+        const ss=data.subjects.filter(s=>s.classId===browse.classId);
+        panel.innerHTML=`
+          <button class="back-btn" onclick="browseAll()">← All Classes</button>
+          <div class="breadcrumb"><span>${esc(c)}</span><span>›</span><strong>Subjects</strong></div>
+          ${ss.length?`<div class="subject-grid">${ss.map(s=>`<article class="subject-card" onclick="browseSubject('${s.id}')"><h3>${esc(s.name)}</h3><span class="explore">→</span></article>`).join("")}</div>`:`<div class="empty"><strong>No subjects yet</strong>Admin can add a subject for this class.</div>`}`;
+        return;
+      }
+      const s=sub(browse.subjectId);
+      const mats=data.materials.filter(m=>m.classId===browse.classId&&m.subjectId===browse.subjectId).sort((a,b)=>new Date(b.uploadedAt)-new Date(a.uploadedAt));
+      panel.innerHTML=`
+        <button class="back-btn" onclick="browseClass('${browse.classId}')">← ${esc(c)}</button>
+        <div class="breadcrumb"><span>${esc(c)}</span><span>›</span><strong>${esc(s)}</strong></div>
+        ${mats.length?`<div class="notes">${mats.map(m=>`
+          <div class="note-group">
+            <div class="note-group-head"><h3>${esc(m.title)}</h3><p>Uploaded ${date(m.uploadedAt)}${m.description?" • "+esc(m.description):""}</p></div>
+            ${m.files.map(f=>`<div class="note-item">
+              <div class="note-main"><div class="pdf">PDF</div><div><strong>${esc(f.name)}</strong><div class="meta">${esc(f.sizeLabel||"PDF document")}</div></div></div>
+              <div class="note-actions"><button class="small" onclick="viewFile('${m.id}','${f.id}')">View</button><button class="small dark" onclick="downloadFile('${m.id}','${f.id}')">Download</button></div>
+            </div>`).join("")}
+          </div>`).join("")}</div>`:`<div class="empty"><strong>No notes uploaded yet</strong>New study material will appear here when the admin publishes it.</div>`}`;
+    }
+    window.browseAll=()=>{browse={classId:null,subjectId:null};renderBrowse()}
+    window.browseClass=id=>{browse={classId:id,subjectId:null};renderBrowse();$("#study").scrollIntoView({behavior:"smooth",block:"start"})}
+    window.browseSubject=id=>{const s=data.subjects.find(x=>x.id===id);browse={classId:s.classId,subjectId:id};renderBrowse();$("#study").scrollIntoView({behavior:"smooth",block:"start"})}
+
+    function getFile(f){
+      if(f.demoPath)return {url:f.demoPath,revoke:false};
+      const b64=files[f.id];if(!b64)return null;
+      const raw=atob(b64.split(",")[1]||""),bytes=new Uint8Array(raw.length);
+      for(let i=0;i<raw.length;i++)bytes[i]=raw.charCodeAt(i);
+      return {url:URL.createObjectURL(new Blob([bytes],{type:"application/pdf"})),revoke:true}
+    }
+    window.viewFile=(mid,fid)=>{const m=data.materials.find(x=>x.id===mid),f=m?.files.find(x=>x.id===fid);if(!f)return;const g=getFile(f);if(!g){toast("PDF unavailable in this browser.");return}window.open(g.url,"_blank","noopener");if(g.revoke)setTimeout(()=>URL.revokeObjectURL(g.url),60000)}
+    window.downloadFile=(mid,fid)=>{const m=data.materials.find(x=>x.id===mid),f=m?.files.find(x=>x.id===fid);if(!f)return;const g=getFile(f);if(!g){toast("PDF unavailable in this browser.");return}const a=document.createElement("a");a.href=g.url;a.download=f.filename||"study-material.pdf";document.body.appendChild(a);a.click();a.remove();if(g.revoke)setTimeout(()=>URL.revokeObjectURL(g.url),1000)}
+
+    function fillSelect(id,items,placeholder=""){const el=$(id);el.innerHTML=(placeholder?`<option value="">${esc(placeholder)}</option>`:"")+items.map(x=>`<option value="${x.id}">${esc(x.name)}</option>`).join("")}
+    function subjectsFor(classId){return data.subjects.filter(s=>s.classId===classId)}
+    function populateAdmin(){
+      fillSelect("#uploadClass",data.classes);fillSelect("#editClass",data.classes);fillSelect("#subjectClass",data.classes);
+      updateSubjects("#uploadClass","#uploadSubject");updateSubjects("#editClass","#editSubject");
+      renderAdmin();
+    }
+    function updateSubjects(classSel,subjectSel){
+      const list=subjectsFor($(classSel).value);fillSelect(subjectSel,list,list.length?"":"No subjects for this class");
+    }
+    function renderAdmin(){
+      $("#adminMaterials").innerHTML=data.materials.length?[...data.materials].sort((a,b)=>new Date(b.uploadedAt)-new Date(a.uploadedAt)).map(m=>`
+        <div class="admin-row"><div><strong>${esc(m.title)}</strong><small>${esc(cls(m.classId))} · ${esc(sub(m.subjectId))} · ${date(m.uploadedAt)} · ${m.files.length} PDF${m.files.length===1?"":"s"}</small></div>
+        <div class="row-actions"><button class="small" onclick="editMaterial('${m.id}')">Edit</button><button class="small danger" onclick="deleteMaterial('${m.id}')">Delete</button></div></div>`).join(""):`<div class="empty"><strong>No material yet</strong>Upload your first PDF.</div>`;
+      $("#classManage").innerHTML=data.classes.map(c=>`<div class="manage-item"><span>${esc(c.name)}</span><button class="small danger" onclick="deleteClass('${c.id}')">Delete</button></div>`).join("");
+      $("#subjectManage").innerHTML=data.subjects.map(s=>`<div class="manage-item"><span>${esc(cls(s.classId))} · ${esc(s.name)}</span><button class="small danger" onclick="deleteSubject('${s.id}')">Delete</button></div>`).join("");
+      $("#scheduleList").innerHTML=data.schedule.map(x=>`<div class="note-group" style="padding:15px 18px"><div style="display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:12px;font-size:12px"><strong style="color:var(--navy)">${esc(x.className)}</strong><span style="color:var(--muted)">${esc(x.days)}</span><b style="color:var(--navy)">${esc(x.time)}</b></div></div>`).join("");
+    }
+
+    window.editMaterial=id=>{
+      const m=data.materials.find(x=>x.id===id);if(!m)return;
+      $("#editId").value=id;$("#editClass").value=m.classId;updateSubjects("#editClass","#editSubject");$("#editSubject").value=m.subjectId;
+      $("#editTopic").value=m.title;$("#editName").value=m.files[0]?.name||"PDF";$("#editDescription").value=m.description||"";modal("#editModal")
+    };
+    window.deleteMaterial=id=>{
+      const m=data.materials.find(x=>x.id===id);if(!m)return;
+      if(!confirm(`Delete "${m.title}"?`))return;
+      m.files.forEach(f=>{if(!f.demoPath)delete files[f.id]});data.materials=data.materials.filter(x=>x.id!==id);save();populateAdmin();renderClasses();renderBrowse();toast("Material deleted.")
+    };
+    window.deleteClass=id=>{
+      if(data.materials.some(m=>m.classId===id)){toast("Delete this class's materials first.");return}
+      const c=data.classes.find(x=>x.id===id);if(!c||!confirm(`Delete ${c.name}?`))return;
+      data.classes=data.classes.filter(x=>x.id!==id);data.subjects=data.subjects.filter(s=>s.classId!==id);save();populateAdmin();renderClasses();renderBrowse();toast("Class deleted.")
+    };
+    window.deleteSubject=id=>{
+      if(data.materials.some(m=>m.subjectId===id)){toast("Delete this subject's materials first.");return}
+      const s=data.subjects.find(x=>x.id===id);if(!s||!confirm(`Delete ${s.name}?`))return;
+      data.subjects=data.subjects.filter(x=>x.id!==id);save();populateAdmin();renderClasses();renderBrowse();toast("Subject deleted.")
+    };
+
+    function openLogin(){modal("#loginModal");$("#loginUser").focus()}
+    $("#adminBtn").onclick=openLogin;$("#footerAdmin").onclick=openLogin;
+    $("#loginForm").onsubmit=e=>{e.preventDefault();if($("#loginUser").value.trim()==="admin"&&$("#loginPass").value==="admin123"){modal("#loginModal",false);populateAdmin();modal("#adminModal");toast("Welcome to the admin dashboard.")}else toast("Invalid credentials.")};
+    $("#logout").onclick=()=>{modal("#adminModal",false);toast("Logged out.")};
+    $("#menuBtn").onclick=()=>$("#navLinks").classList.toggle("open");
+    $$("#navLinks a").forEach(a=>a.onclick=()=>$("#navLinks").classList.remove("open"));
+    $$("[data-close]").forEach(x=>x.onclick=()=>modal("#"+({login:"loginModal",admin:"adminModal",edit:"editModal",class:"classModal",subject:"subjectModal"}[x.dataset.close]),false));
+
+    $$(".tab").forEach(t=>t.onclick=()=>{$$(".tab").forEach(x=>x.classList.remove("active"));t.classList.add("active");$$(".admin-body").forEach(x=>x.classList.add("hidden"));$("#tab-"+t.dataset.tab).classList.remove("hidden")});
+    $("#uploadClass").onchange=()=>updateSubjects("#uploadClass","#uploadSubject");
+    $("#editClass").onchange=()=>updateSubjects("#editClass","#editSubject");
+
+    $("#uploadForm").onsubmit=e=>{
+      e.preventDefault();const f=$("#uploadFile").files[0];if(!f||f.type!=="application/pdf"){toast("Please choose a PDF.");return}
+      if(f.size>3.5*1024*1024){toast("Demo mode limit: keep the PDF below 3.5 MB.");return}
+      const r=new FileReader();r.onload=()=>{
+        const fid=uid("file");files[fid]=r.result;
+        data.materials.push({id:uid("mat"),classId:$("#uploadClass").value,subjectId:$("#uploadSubject").value,title:$("#uploadTopic").value.trim(),description:$("#uploadDescription").value.trim(),uploadedAt:new Date().toISOString(),files:[{id:fid,name:$("#uploadName").value.trim(),filename:f.name,sizeLabel:(f.size/1024/1024).toFixed(2)+" MB"}]});
+        save();e.target.reset();populateAdmin();renderClasses();renderBrowse();toast("Material uploaded and published.");
+        $$(".tab").forEach(x=>x.classList.remove("active"));$('[data-tab="manage"]').classList.add("active");$$(".admin-body").forEach(x=>x.classList.add("hidden"));$("#tab-manage").classList.remove("hidden");
+      };r.readAsDataURL(f)
+    };
+
+    $("#editForm").onsubmit=e=>{
+      e.preventDefault();const m=data.materials.find(x=>x.id===$("#editId").value);if(!m)return;
+      m.classId=$("#editClass").value;m.subjectId=$("#editSubject").value;m.title=$("#editTopic").value.trim();m.description=$("#editDescription").value.trim();
+      const f=$("#editFile").files[0];
+      const finish=()=>{m.files[0].name=$("#editName").value.trim();save();modal("#editModal",false);populateAdmin();renderClasses();renderBrowse();toast("Material updated.")};
+      if(f){
+        if(f.type!=="application/pdf"){toast("Replacement file must be a PDF.");return}
+        if(f.size>3.5*1024*1024){toast("Demo mode limit: keep the PDF below 3.5 MB.");return}
+        const r=new FileReader();r.onload=()=>{const old=m.files[0];if(old&&!old.demoPath)delete files[old.id];const fid=uid("file");files[fid]=r.result;m.files=[{id:fid,name:$("#editName").value.trim(),filename:f.name,sizeLabel:(f.size/1024/1024).toFixed(2)+" MB"}];finish()};r.readAsDataURL(f)
+      }else finish()
+    };
+
+    $("#addClass").onclick=()=>{modal("#classModal");$("#className").focus()};
+    $("#classForm").onsubmit=e=>{e.preventDefault();const n=$("#className").value.trim();if(!n)return;if(data.classes.some(c=>c.name.toLowerCase()===n.toLowerCase())){toast("That class already exists.");return}data.classes.push({id:uid("class"),name:n});save();modal("#classModal",false);populateAdmin();renderClasses();renderBrowse();e.target.reset();toast("Class added.")};
+    $("#addSubject").onclick=()=>{populateAdmin();modal("#subjectModal");$("#subjectName").focus()};
+    $("#subjectForm").onsubmit=e=>{e.preventDefault();const cid=$("#subjectClass").value,n=$("#subjectName").value.trim();if(!cid||!n)return;if(data.subjects.some(s=>s.classId===cid&&s.name.toLowerCase()===n.toLowerCase())){toast("That subject already exists for this class.");return}data.subjects.push({id:uid("sub"),classId:cid,name:n});save();modal("#subjectModal",false);populateAdmin();renderClasses();renderBrowse();e.target.reset();toast("Subject added.")};
+
+    $("#year").textContent=new Date().getFullYear();
+    renderClasses();renderBrowse();renderAdmin();
+  </script>
 </body>
 </html>

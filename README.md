@@ -1,67 +1,46 @@
-# Gyaan Ashram Career Institute — Version 2
+# Gyaan Ashram Career Institute — Version 3
 
-A responsive study-material portal prototype with the navy/gold branded homepage layout for Gyaan Ashram Career Institute.
+Version 3 is a UI-first redesign based on the supplied Gyaan Ashram branding.
 
-## What works in Version 2
+## Design direction
 
-- Public homepage using the supplied Gyaan Ashram branding.
-- Responsive mobile + desktop layout.
-- Class → Subject → Chapter/Topic → PDF browsing.
-- Upload date shown automatically.
-- Multiple PDFs can be attached to a topic.
-- PDF view + download buttons.
-- Admin dashboard.
-- Demo admin login.
-- Add/delete classes.
-- Add/delete subjects.
-- Upload/edit/delete study material.
-- Local browser persistence using `localStorage`.
+- The supplied promotional PNG is NOT used as the website background.
+- Navy, gold, cream and white are used as the design language.
+- The hero is built with HTML/CSS shapes, gradients, typography and the Gyaan Ashram logo.
+- Study Material is the primary homepage action.
+- Classes are visible directly on the homepage.
+- Mobile and desktop layouts are explicitly handled with responsive CSS media queries.
+- The admin workflow from the prototype is retained.
 
 ## Demo admin
 
-Username: `admin`  
+Username: `admin`
 Password: `admin123`
 
-**Important:** this login is deliberately only a prototype. It is NOT secure enough for a real public deployment because the credential is present in the client-side JavaScript.
+This is prototype authentication only. Before public production use, replace it with Supabase Auth.
 
-## Production architecture
+## Demo storage
 
-The next step should replace the demo storage/authentication with:
+Uploaded PDFs are stored in browser localStorage in this prototype. That means an upload made on one device/browser is not automatically available on another device.
 
-- Netlify or GitHub Pages for frontend hosting
+Production architecture:
+- Netlify or GitHub Pages for frontend
 - Supabase Auth for admin authentication
-- Supabase PostgreSQL for classes, subjects and notes metadata
-- Supabase Storage for PDF files
-- Row Level Security policies so only the authenticated admin can modify content
+- Supabase PostgreSQL for classes, subjects and material metadata
+- Supabase Storage for PDFs
 
-The public PDFs can remain publicly readable because the project requirements explicitly allow sharing of PDF URLs.
+## Files
 
-## Running locally
+- `index.html` — complete Version 3 frontend
+- `assets/gyaan-ashram-logo.jpg` — full logo crop derived from the supplied branding image
+- `assets/tissues-in-action.pdf` — supplied sample study material
 
-Because the site is static, you can open `index.html` directly in a browser. A local HTTP server is recommended for the most predictable PDF behavior.
+## Local run
 
-Example with Python:
+Open `index.html` directly, or use:
 
-    python -m http.server 8000
+`python -m http.server 8000`
 
-Then open:
+Then visit:
 
-    http://localhost:8000
-
-## Project structure
-
-    index.html
-    styles.css
-    app.js
-    assets/
-      gyaan-ashram-banner.jpg
-      gyaan-ashram-logo.jpg
-      tissues-in-action.pdf
-    README.md
-
-
-## Version 2 UI changes
-
-- Redesigned homepage to match the structured reference layout: navy navigation, prominent branded hero, centered readable hero panel, feature strip, study-material cards, information strip, about, schedule and contact sections.
-- Reworked the header logo treatment so the full Gyaan Ashram name is visible instead of being clipped.
-- Existing admin/demo functionality and student material browsing are retained.
+`http://localhost:8000`
