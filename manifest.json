@@ -1,22 +1,14 @@
 {
   "name": "Gyaan Ashram Career Institute",
   "short_name": "Gyaan Ashram",
-  "description": "Study material and notes — Gyaan Ashram Career Institute, Gopalganj",
+  "description": "Study material and notes - Gyaan Ashram Career Institute, Gopalganj",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#071d4a",
   "theme_color": "#071d4a",
   "orientation": "portrait-primary",
   "icons": [
-    {
-      "src": "assets/gyaan-ashram-logo.jpg",
-      "sizes": "192x192",
-      "type": "image/jpeg"
-    },
-    {
-      "src": "assets/gyaan-ashram-logo.jpg",
-      "sizes": "512x512",
-      "type": "image/jpeg"
-    }
+    {"src": "assets/gyaan-ashram-new-logo.png", "sizes": "192x192", "type": "image/png"},
+    {"src": "assets/gyaan-ashram-new-logo.png", "sizes": "512x512", "type": "image/png"}
   ]
 }

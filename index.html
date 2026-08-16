@@ -6,11 +6,10 @@
   <meta name="description" content="Gyaan Ashram Career Institute — study material and notes for Class 8, 9, 10 and beyond.">
   <meta name="theme-color" content="#071d4a">
   <title>Gyaan Ashram Career Institute</title>
-  <link rel="icon" href="assets/gyaan-ashram-logo.jpg">
+  <link rel="icon" href="assets/gyaan-ashram-new-logo.png">
   <link rel="manifest" href="manifest.json">
-  <link rel="apple-touch-icon" href="assets/gyaan-ashram-logo.jpg">
+  <link rel="apple-touch-icon" href="assets/gyaan-ashram-new-logo.png">
   <link rel="stylesheet" href="styles.css">
-  <!-- Supabase JS Client (CDN) -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 </head>
 <body>
@@ -19,12 +18,13 @@
   <header class="header">
     <div class="container nav">
       <a class="brand" href="#home" aria-label="Gyaan Ashram home">
-        <img src="assets/gyaan-ashram-logo.jpg" alt="Gyaan Ashram Career Institute">
+        <img src="assets/gyaan-ashram-new-logo.png" alt="Gyaan Ashram Career Institute">
       </a>
       <nav id="navLinks" class="nav-links">
         <a href="#home">Home</a>
         <a href="#study">Study Material</a>
-        <a href="#schedule">Schedule</a>
+        <a href="#feeSection">Fees</a>
+        <a href="#scheduleSection">Schedule</a>
         <a href="#contact">Contact</a>
         <button id="darkToggle" class="dark-toggle" aria-label="Toggle dark mode">&#9790;</button>
         <button id="adminBtn" class="admin-link">Admin Login</button>
@@ -42,44 +42,55 @@
           <p>Access your class notes, study material and PDFs in one simple place.</p>
           <div class="hero-actions">
             <a class="primary" href="#study">Explore Study Material &rarr;</a>
-            <a class="secondary" href="#schedule">View Schedule</a>
+            <a class="secondary" href="#scheduleSection">View Schedule</a>
           </div>
         </div>
         <div class="hero-visual" aria-hidden="true">
           <span class="gold-dot d1"></span><span class="gold-dot d2"></span><span class="gold-dot d3"></span>
           <div class="arch">
-            <div class="arch-inner">
-              <img class="mini-logo" src="assets/gyaan-ashram-logo.jpg" alt="">
-              <strong>GYAAN ASHRAM</strong>
-              <span>CAREER INSTITUTE</span>
-              <div style="height:1px;width:120px;background:#d3a42c;margin:12px 0"></div>
-              <small style="color:#667085;font-weight:700">Study &bull; Prepare &bull; Grow &bull; Succeed</small>
+            <div class="arch-inner" style="background:url(assets/students-bg.png) center/cover no-repeat">
+              <div class="arch-overlay">
+                <img class="mini-logo" src="assets/gyaan-ashram-new-logo.png" alt="">
+                <strong>GYAAN ASHRAM</strong>
+                <span>CAREER INSTITUTE</span>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Recently Added Section -->
+    <!-- Notice Board -->
+    <section id="noticeBoard" class="section notice-section">
+      <div class="container">
+        <div class="section-head">
+          <span class="section-kicker">NOTICE BOARD</span>
+          <h2>Announcements</h2>
+        </div>
+        <div id="noticeList" class="notice-list"></div>
+      </div>
+    </section>
+
+    <!-- Recently Added -->
     <section id="recent" class="section recent-section">
       <div class="container">
         <div class="section-head">
           <span class="section-kicker">RECENTLY ADDED</span>
           <h2>Latest Study Material</h2>
-          <p>The most recent uploads from Gyaan Ashram — stay up to date.</p>
+          <p>The most recent uploads from Gyaan Ashram.</p>
         </div>
         <div id="recentGrid" class="recent-grid"></div>
       </div>
     </section>
 
+    <!-- Study Material -->
     <section id="study" class="section study">
       <div class="container">
         <div class="section-head">
           <span class="section-kicker">STUDY MATERIAL</span>
           <h2>Choose your class</h2>
-          <p>Find your subject and access the latest notes and PDFs uploaded by Gyaan Ashram.</p>
+          <p>Find your subject and access the latest notes and PDFs.</p>
         </div>
-        <!-- Search bar -->
         <div class="search-bar">
           <input id="searchInput" type="text" placeholder="Search notes by title, subject, or class..." aria-label="Search study material">
           <button id="searchClear" class="search-clear hidden" aria-label="Clear search">&times;</button>
@@ -90,40 +101,36 @@
       </div>
     </section>
 
-    <section id="schedule" class="info-strip">
-      <div class="container info-grid">
-        <article class="info-card">
-          <div class="info-icon">&#9207;</div>
-          <h3>Schedule</h3>
-          <p>Check regular class timings and important study sessions.</p>
-          <a class="info-link" href="#scheduleSection">View schedule &darr;</a>
-        </article>
-        <article class="info-card">
-          <div class="info-icon">&#10022;</div>
-          <h3>About Gyaan Ashram</h3>
-          <p>A focused learning environment built around clear concepts and strong preparation.</p>
-          <a class="info-link" href="#contact">Know more &darr;</a>
-        </article>
-        <article class="info-card">
-          <div class="info-icon">&#9742;</div>
-          <h3>Contact</h3>
-          <p>Have a question about classes or study material? Get in touch with us.</p>
-          <a class="info-link" href="#contact">Contact us &darr;</a>
-        </article>
+    <!-- Fee Details -->
+    <section id="feeSection" class="section">
+      <div class="container">
+        <div class="section-head">
+          <span class="section-kicker">FEE DETAILS</span>
+          <h2>Payment Status — <span id="feeYear"></span></h2>
+          <p>Monthly fee payment status of students.</p>
+        </div>
+        <div class="fee-table-wrap">
+          <table id="feeTable" class="fee-table">
+            <thead id="feeHead"></thead>
+            <tbody id="feeBody"></tbody>
+          </table>
+        </div>
       </div>
     </section>
 
-    <section id="scheduleSection" class="section" style="padding-bottom:45px">
+    <!-- Schedule -->
+    <section id="scheduleSection" class="section">
       <div class="container">
-        <div class="section-head" style="margin-bottom:24px">
+        <div class="section-head">
           <span class="section-kicker">CLASS TIMINGS</span>
-          <h2>Regular batches</h2>
+          <h2>Regular Batches</h2>
         </div>
         <div id="scheduleList" class="schedule-list"></div>
       </div>
     </section>
 
-    <section id="contact" class="section" style="padding-top:35px">
+    <!-- Contact -->
+    <section id="contact" class="section">
       <div class="container">
         <div class="contact-card">
           <div>
@@ -148,10 +155,25 @@
   </main>
 
   <footer>
-    <div class="container footer-row">
-      <div class="footer-brand"><strong>GYAAN ASHRAM</strong><span>CAREER INSTITUTE</span></div>
-      <p>&copy; <span id="year"></span> Gyaan Ashram Career Institute. All rights reserved.</p>
-      <button id="footerAdmin" class="footer-admin">Admin Login</button>
+    <div class="container footer-inner">
+      <div class="footer-logo">
+        <img src="assets/gyaan-ashram-new-logo.png" alt="Gyaan Ashram Career Institute">
+      </div>
+      <div class="footer-info">
+        <strong>Gyaan Ashram Career Institute</strong>
+        <p>Empowering Minds. Building Futures.</p>
+        <p>Koini Bazaar, Mishra Market, Gopalganj</p>
+      </div>
+      <div class="footer-links">
+        <a href="#study">Study Material</a>
+        <a href="#feeSection">Fees</a>
+        <a href="#scheduleSection">Schedule</a>
+        <a href="#contact">Contact</a>
+        <button id="footerAdmin" class="footer-admin">Admin Login</button>
+      </div>
+      <div class="footer-copy">
+        <p>&copy; <span id="year"></span> Gyaan Ashram Career Institute. All rights reserved.</p>
+      </div>
     </div>
   </footer>
 
@@ -175,19 +197,22 @@
   <!-- Admin Dashboard Modal -->
   <div id="adminModal" class="modal hidden">
     <div class="backdrop" data-close="admin"></div>
-    <div class="modal-box">
+    <div class="modal-box admin-modal-box">
       <div class="admin-head">
         <div><span class="section-kicker">GYAAN ASHRAM</span><h2>Admin Dashboard</h2></div>
         <div class="admin-actions">
-          <button id="addClass" class="outline">+ Add Class</button>
-          <button id="addSubject" class="outline">+ Add Subject</button>
+          <button id="addClass" class="outline">+ Class</button>
+          <button id="addSubject" class="outline">+ Subject</button>
           <button id="logout" class="outline">Logout</button>
         </div>
       </div>
       <div class="admin-tabs">
-        <button class="tab active" data-tab="upload">Upload Material</button>
-        <button class="tab" data-tab="manage">Manage Material</button>
-        <button class="tab" data-tab="structure">Classes &amp; Subjects</button>
+        <button class="tab active" data-tab="upload">Upload</button>
+        <button class="tab" data-tab="manage">Materials</button>
+        <button class="tab" data-tab="structure">Classes</button>
+        <button class="tab" data-tab="fees">Fees</button>
+        <button class="tab" data-tab="sched">Schedule</button>
+        <button class="tab" data-tab="notice">Notices</button>
       </div>
 
       <div id="tab-upload" class="admin-body">
@@ -198,15 +223,29 @@
           </div>
           <label>Chapter / Topic<input id="uploadTopic" required placeholder="e.g. Tissues in Action"></label>
           <label>PDF / Material name<input id="uploadName" required placeholder="e.g. Complete Notes"></label>
-          <label>Description<textarea id="uploadDescription" rows="3" placeholder="Short description (optional)"></textarea></label>
+          <label>Description<textarea id="uploadDescription" rows="2" placeholder="Short description (optional)"></textarea></label>
           <label>PDF file<input id="uploadFile" type="file" accept="application/pdf" required></label>
-          <div class="upload-note">PDFs are stored securely in the cloud. All devices will see uploaded material immediately.</div>
           <button class="primary" type="submit">Upload &amp; Publish</button>
         </form>
       </div>
 
       <div id="tab-manage" class="admin-body hidden"><div id="adminMaterials"></div></div>
       <div id="tab-structure" class="admin-body hidden"><div class="manage-grid"><div class="manage-box"><h3>Classes</h3><div id="classManage"></div></div><div class="manage-box"><h3>Subjects</h3><div id="subjectManage"></div></div></div></div>
+
+      <div id="tab-fees" class="admin-body hidden">
+        <div class="admin-section-head"><h3>Fee Records — <span id="adminFeeYear"></span></h3><button id="addStudent" class="outline">+ Add Student</button></div>
+        <div class="fee-table-wrap"><table id="adminFeeTable" class="fee-table admin-fee-table"><thead id="adminFeeHead"></thead><tbody id="adminFeeBody"></tbody></table></div>
+      </div>
+
+      <div id="tab-sched" class="admin-body hidden">
+        <div class="admin-section-head"><h3>Schedule</h3><button id="addSchedule" class="outline">+ Add Entry</button></div>
+        <div id="adminSchedule"></div>
+      </div>
+
+      <div id="tab-notice" class="admin-body hidden">
+        <div class="admin-section-head"><h3>Notices</h3><button id="addNotice" class="outline">+ Add Notice</button></div>
+        <div id="adminNotices"></div>
+      </div>
     </div>
   </div>
 
@@ -219,13 +258,10 @@
       <h2 style="margin-top:6px">Update study material</h2>
       <form id="editForm">
         <input id="editId" type="hidden">
-        <div class="form-grid">
-          <label>Class<select id="editClass" required></select></label>
-          <label>Subject<select id="editSubject" required></select></label>
-        </div>
+        <div class="form-grid"><label>Class<select id="editClass" required></select></label><label>Subject<select id="editSubject" required></select></label></div>
         <label>Chapter / Topic<input id="editTopic" required></label>
         <label>PDF / Material name<input id="editName" required></label>
-        <label>Description<textarea id="editDescription" rows="3"></textarea></label>
+        <label>Description<textarea id="editDescription" rows="2"></textarea></label>
         <label>Replace PDF <span style="font-weight:500;color:#8a94a5">(optional)</span><input id="editFile" type="file" accept="application/pdf"></label>
         <button class="primary" style="width:100%" type="submit">Save Changes</button>
       </form>
@@ -238,7 +274,7 @@
     <div class="modal-box login-box">
       <button class="close" data-close="class">&times;</button>
       <span class="section-kicker">ADMIN</span><h2 style="margin-top:6px">Add Class</h2>
-      <form id="classForm"><label>Class name<input id="className" placeholder="e.g. Class 11" required></label><button class="primary" style="width:100%">Add Class</button></form>
+      <form id="classForm"><label>Class name<input id="classNameInput" placeholder="e.g. Class 11" required></label><button class="primary" style="width:100%">Add Class</button></form>
     </div>
   </div>
 
@@ -248,10 +284,37 @@
     <div class="modal-box login-box">
       <button class="close" data-close="subject">&times;</button>
       <span class="section-kicker">ADMIN</span><h2 style="margin-top:6px">Add Subject</h2>
-      <form id="subjectForm">
-        <label>Class<select id="subjectClass" required></select></label>
-        <label>Subject name<input id="subjectName" placeholder="e.g. Social Science" required></label>
-        <button class="primary" style="width:100%">Add Subject</button>
+      <form id="subjectForm"><label>Class<select id="subjectClass" required></select></label><label>Subject name<input id="subjectNameInput" placeholder="e.g. Social Science" required></label><button class="primary" style="width:100%">Add Subject</button></form>
+    </div>
+  </div>
+
+  <!-- Add Schedule Modal -->
+  <div id="schedModal" class="modal hidden">
+    <div class="backdrop" data-close="sched"></div>
+    <div class="modal-box login-box">
+      <button class="close" data-close="sched">&times;</button>
+      <span class="section-kicker">ADMIN</span><h2 style="margin-top:6px">Add Schedule Entry</h2>
+      <form id="schedForm">
+        <input id="schedId" type="hidden">
+        <label>Batch name<input id="schedBatch" placeholder="e.g. Class 8 - Morning" required></label>
+        <label>Days<input id="schedDays" placeholder="e.g. Mon - Sat" required></label>
+        <label>Time<input id="schedTime" placeholder="e.g. 7:00 AM - 9:00 AM" required></label>
+        <button class="primary" style="width:100%">Save</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Add Notice Modal -->
+  <div id="noticeModal" class="modal hidden">
+    <div class="backdrop" data-close="notice"></div>
+    <div class="modal-box login-box">
+      <button class="close" data-close="notice">&times;</button>
+      <span class="section-kicker">ADMIN</span><h2 style="margin-top:6px">Add Notice</h2>
+      <form id="noticeForm">
+        <input id="noticeId" type="hidden">
+        <label>Title<input id="noticeTitle" placeholder="e.g. Holiday Notice" required></label>
+        <label>Message<textarea id="noticeMessage" rows="3" placeholder="Notice content..." required></textarea></label>
+        <button class="primary" style="width:100%">Publish Notice</button>
       </form>
     </div>
   </div>
